@@ -6,7 +6,7 @@
 1. New user registration:
    - Using email, unique username and password.
    - Social media login (Google, Facebook, etc.).
-3. Login for registered users.
+3. Login for registered users + 2FA using a code on email.
 4. Password recovery.
 
 ### User Profile
@@ -58,7 +58,7 @@
    - Specifying the meetup place (on maps).
 5. Group chat (see the "Messaging" section):
    - General chat.
-   - Specific themed chats **(like a chat for each watched movie in the group AFAIU)**
+   - Specific themed chats **? (like a chat for each watched movie in the group AFAIU)**
 6. Joining a group:
    - Accepting/declining a private group invitation.
 7. Leaving a group.
@@ -66,15 +66,13 @@
 ### Organizing Meetups
 1. Users can start a poll to vote for a movie to watch next.
 2. Users can start a poll to vote for a date, time, and place of a meetup.
+   
+**? (How will date, time and place be selected if they all vote differently?)** 
 
-**How will date, time and place be selected if they all vote differently?** 
-
-3. Notifications to group members about upcoming meetups.
+4. Notifications to group members about upcoming meetups.
 
 ### Messaging
-1. users can send messages...
-2. ???
-3. 
+**?**
 
 ### Movie Recomendations
 1. Recommendations are based on the user's and friends' preferences and do not include movies for the user's watch history. 
@@ -92,7 +90,7 @@
 
 
 ### Additional Features
-1. Calendar integration for adding events. **wdym**
+1. Calendar integration for adding events. **?**
 2. Reminders about upcoming events.
 3. Ability to share meetups and movies on social media **?**.
 
