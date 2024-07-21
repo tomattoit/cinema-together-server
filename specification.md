@@ -30,7 +30,7 @@
    - Delete the account.
    - Disable all notifications for different time periods
 
-###User functionality
+### User functionality
 1. Searching for users:
    - By username.
    - By name.
