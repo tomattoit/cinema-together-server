@@ -17,6 +17,7 @@
    - Gender.
    - Location. (Country and city selector)
    - Profile picture.
+   - Rating
 2. Setting preferences:
    - Favorite movie genres.
    - Favorite directors.
