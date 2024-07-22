@@ -24,6 +24,7 @@
    - Preferred cinemas.
 3. History of watched movies and left reviews.
 4. Settings:
+   - Enable/disable 2FA. Enabled by default.
    - Toggle displaying the history of watched movies and reviews to other users in the profile.
    - Choose who can send DMs: any users, friends only.
    - Make the account private (only friends can view your account).
