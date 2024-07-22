@@ -2,9 +2,9 @@
 
 public class EntityLimitations
 {
-    public const int MaxCountryNameLength = 50;
+    public const int MaxCountryNameLength = 100;
 
-    public const int MaxCityNameLength = 50;
+    public const int MaxCityNameLength = 100;
 
     public const int MaxEmailLength = 100;
 

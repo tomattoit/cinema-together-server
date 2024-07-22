@@ -3,14 +3,14 @@ using Microsoft.Extensions.Configuration;
 using Application.Common.Constants;
 using Microsoft.EntityFrameworkCore;
 
-namespace Persistence;
+namespace Persistence.Extensions;
 
 public static class ServiceCollectionExtensions
 {
     public static void ConfigureSqlServerDbContext(this IServiceCollection services, IConfiguration configuration)
     {
         var connectionString = configuration.GetConnectionString(ConfigSectionNames.DefaultConnectionString);
-        services.AddDbContext<ApplicationDbContext>(options => 
+        services.AddDbContext<ApplicationDbContext>(options =>
             options.UseSqlServer(connectionString));
     }
 }

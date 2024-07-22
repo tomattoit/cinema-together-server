@@ -1,4 +1,4 @@
-using Persistence;
+using Persistence.Extensions;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -10,6 +10,8 @@ builder.Services.AddSwaggerGen();
 builder.Services.ConfigureSqlServerDbContext(builder.Configuration);
 
 var app = builder.Build();
+
+app.SeedDatabase();
 
 if (app.Environment.IsDevelopment())
 {
