@@ -1,10 +1,11 @@
 ﻿using Domain.Entities;
+using Application.Data;
 using Microsoft.EntityFrameworkCore;
 using System.Reflection;
 
 namespace Persistence;
 
-public class ApplicationDbContext : DbContext
+public class ApplicationDbContext : DbContext, IApplicationDbContext
 {
     public DbSet<User> Users { get; set; }
 
