@@ -30,4 +30,8 @@ public class User : IBaseEntity
     public Guid? CityId { get; set; }
 
     public City City { get; set; }
+    
+    public Guid? RoleId { get; set; }
+    
+    public Role Role { get; set; }
 }

@@ -10,5 +10,5 @@ public interface IApplicationDbContext
     DbSet<Country> Countries { get; }
     DbSet<User> Users { get; }
 
-    Task<int> SaveChangesAsync(CancellationToken cancellationToken);
+    Task<int> SaveChangesAsync(CancellationToken cancellationToken = default);
 }

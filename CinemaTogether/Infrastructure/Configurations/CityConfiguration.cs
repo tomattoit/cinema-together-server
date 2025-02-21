@@ -3,7 +3,7 @@ using Domain.Entities;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 
-namespace Persistence.EntityTypeConfigurations;
+namespace Infrastructure.Configurations;
 
 public class CityConfiguration : IEntityTypeConfiguration<City>
 {
