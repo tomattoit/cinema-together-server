@@ -8,7 +8,7 @@ public class LoginEndpoint : IEndpoint
 {
     public void MapEndpoint(IEndpointRouteBuilder app)
     {
-        app.MapPost("/login", async (LoginModel model,
+        app.MapPost("/api/login", async (LoginModel model,
             ILoginService loginService,
             IConfiguration configuration,
             HttpContext context,
