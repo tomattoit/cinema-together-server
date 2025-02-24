@@ -1,4 +1,3 @@
-using System.Reflection;
 using Application;
 using Infrastructure;
 using WebApi.Extensions;
@@ -14,17 +13,17 @@ builder.Services
     .AddApplication()
     .AddInfrastructure(builder.Configuration);
 
-builder.Services.AddEndpoints(typeof(Program).Assembly);
+builder.Services.AddControllers();
 
 var app = builder.Build();
-
-app.MapEndpoints();
 
 if (app.Environment.IsDevelopment())
 {
     app.UseSwagger();
     app.UseSwaggerUI();
 }
+
+app.MapControllers();
 
 app.ApplyMigrations();
 
