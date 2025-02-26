@@ -1,7 +1,9 @@
 ﻿using System.Security.Claims;
+using Application.Common.Dto;
 using Application.Common.Services;
-using Infrastructure.Services;
+using Domain.Entities;
 using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.JsonPatch;
 using Microsoft.AspNetCore.Mvc;
 using WebApi.Models;
 
@@ -39,5 +41,28 @@ public class UserController(IUserService userService) : ControllerBase
         var user = await userService.GetUserPrivateInfoByIdAsync(userId, cancellationToken);
         
         return Results.Ok(user);
+    }
+
+    [Authorize]
+    [HttpPut("me")]
+    public async Task<IResult> PatchMeAsync(UpdateUserModel model, CancellationToken cancellationToken)
+    {
+        if (!Guid.TryParse(User.FindFirst(ClaimTypes.NameIdentifier)?.Value, out var userId))
+        {
+            return Results.Unauthorized();
+        }
+
+        var dto = new UpdateUserInfoDto(
+            model.Email,
+            model.Username,
+            model.Name,
+            model.DateOfBirth,
+            model.Gender,
+            model.ProfilePicturePath,
+            model.CityId);
+        
+        await userService.UpdateProfileInfo(userId, dto, cancellationToken);
+        
+        return Results.NoContent();
     }
 }

@@ -41,7 +41,7 @@ internal sealed class GlobalExceptionHandler(ILogger<GlobalExceptionHandler> log
                 status = StatusCodes.Status400BadRequest;
                 problemDetails = CreateProblemDetails(
                     status,
-                    "Provided propery was not unique",
+                    "Provided property was not unique",
                     exception.Message,
                     "https://datatracker.ietf.org/doc/html/rfc7231#section-6.5.1");
                 break;

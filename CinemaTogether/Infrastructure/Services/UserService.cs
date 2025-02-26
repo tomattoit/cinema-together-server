@@ -5,6 +5,7 @@ using Domain.Constants;
 using Domain.Entities;
 using Domain.Exceptions;
 using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.JsonPatch;
 using Microsoft.EntityFrameworkCore;
 using Shared.Cryptography;
 
@@ -95,6 +96,25 @@ public class UserService(IApplicationDbContext context) : IUserService
             throw new NotFoundException("User", "Id", userId.ToString());
         
         return user;
+    }
+
+    public async Task UpdateProfileInfo(Guid userId, UpdateUserInfoDto userDto, CancellationToken cancellationToken = default)
+    {
+        var user = await context.Users
+            .FirstOrDefaultAsync(u => u.Id == userId, cancellationToken);
+        
+        if (user == null)
+            throw new NotFoundException("User", "Id", userId.ToString());
+        
+        user.Email = userDto.Email;
+        user.Name = userDto.Name;
+        user.CityId = userDto.CityId;
+        user.Gender = userDto.Gender;
+        user.ProfilePicturePath = userDto.ProfilePicturePath;
+        user.DateOfBirth = userDto.DateOfBirth;
+        user.Username = userDto.Username;
+        
+        await context.SaveChangesAsync(cancellationToken);
     }
     
 }
