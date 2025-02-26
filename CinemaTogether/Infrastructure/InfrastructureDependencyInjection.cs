@@ -76,7 +76,7 @@ public static class InfrastructureDependencyInjection
     {
         services
             .AddScoped<ILoginService, LoginService>()
-            .AddScoped<IRegisterService, RegisterService>();
+            .AddScoped<IUserService, UserService>();
         
         return services;
     }

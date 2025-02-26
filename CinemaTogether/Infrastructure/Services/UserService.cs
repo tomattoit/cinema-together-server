@@ -1,4 +1,5 @@
-﻿using Application.Common.Services;
+﻿using Application.Common.Dto;
+using Application.Common.Services;
 using Application.Data;
 using Domain.Constants;
 using Domain.Entities;
@@ -8,7 +9,7 @@ using Shared.Cryptography;
 
 namespace Infrastructure.Services;
 
-public class RegisterService(IApplicationDbContext context) : IRegisterService
+public class UserService(IApplicationDbContext context) : IUserService
 {
     public async Task RegisterAsync(
         string email,
@@ -45,5 +46,27 @@ public class RegisterService(IApplicationDbContext context) : IRegisterService
             cancellationToken);
         
         await context.SaveChangesAsync(cancellationToken);
+    }
+
+    public async Task<UserPublicInfoDto> GetUserPublicInfoByIdAsync(Guid userId, CancellationToken cancellationToken = default)
+    {
+        var user = await context.Users
+            .AsNoTracking()
+            .Where(u => u.Id == userId)
+            .Include(u => u.City)
+            .Select(u => new UserPublicInfoDto(
+                u.Username,
+                u.Name,
+                u.DateOfBirth,
+                u.Gender.ToString(),
+                u.ProfilePicturePath,
+                u.City.Name,
+                u.City.Country.Name))
+            .FirstOrDefaultAsync(cancellationToken);
+        
+        if (user == null)
+            throw new NotFoundException("User", "Id", userId.ToString());
+        
+        return user;
     }
 }
