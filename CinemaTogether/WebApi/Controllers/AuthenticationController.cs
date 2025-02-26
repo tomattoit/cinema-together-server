@@ -1,6 +1,4 @@
-﻿using Application.Common.Auth;
-using Domain.Constants;
-using Application.Commands.Users;
+﻿using Domain.Constants;
 using Application.Common.Services;
 using MediatR;
 using Microsoft.AspNetCore.Mvc;
@@ -10,27 +8,15 @@ namespace WebApi.Controllers;
 
 [ApiController]
 [Route("api/authentication")]
-public class AuthenticationController : ControllerBase
+public class AuthenticationController(
+    IConfiguration configuration,
+    ILoginService loginService)
+    : ControllerBase
 {
-    private readonly ISender _sender;
-    private readonly IConfiguration _configuration;
-    private readonly ILoginService _loginService;
-
-    public AuthenticationController(
-        ISender sender,
-        IConfiguration configuration,
-        ITokenProvider tokenProvider,
-        ILoginService loginService)
-    {
-        _sender = sender;
-        _configuration = configuration;
-        _loginService = loginService;
-    }
-
     [HttpPost("login")]
     public async Task<IResult> Login([FromBody] LoginModel model, CancellationToken cancellationToken)
     {
-        var token = await _loginService.Login(model.Email, model.Password, cancellationToken);
+        var token = await loginService.Login(model.Email, model.Password, cancellationToken);
 
         Response.Cookies.Append(
             CommonConstants.DefaultTokenName,
@@ -40,23 +26,10 @@ public class AuthenticationController : ControllerBase
                 HttpOnly = true,
                 Secure = true,
                 SameSite = SameSiteMode.None,
-                Expires = DateTime.UtcNow.AddMinutes(_configuration.GetValue<int>("Jwt:ExpirationInMinutes"))
+                Expires = DateTime.UtcNow.AddMinutes(configuration.GetValue<int>("Jwt:ExpirationInMinutes"))
             });
 
         return Results.Ok();
-    }
-
-    [HttpPost("signup")]
-    public async Task<IResult> SignUp([FromBody] RegisterModel model, CancellationToken cancellationToken)
-    {
-        await _sender.Send(
-            new RegisterCommand(
-                model.Email,
-                model.Password,
-                model.Username),
-            cancellationToken);
-
-        return Results.Created();
     }
 
     [HttpPost("logout")]

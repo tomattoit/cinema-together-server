@@ -22,7 +22,7 @@ public static class InfrastructureDependencyInjection
             .AddDatabase(configuration)
             .AddAuthenticationInternal(configuration)
             .AddAuthorization()
-            .AddScoped<ILoginService, LoginService>();
+            .AddServices();
 
     private static IServiceCollection AddDatabase(
         this IServiceCollection services,
@@ -69,6 +69,15 @@ public static class InfrastructureDependencyInjection
         
         services.AddSingleton<ITokenProvider, TokenProvider>();
 
+        return services;
+    }
+
+    private static IServiceCollection AddServices(this IServiceCollection services)
+    {
+        services
+            .AddScoped<ILoginService, LoginService>()
+            .AddScoped<IRegisterService, RegisterService>();
+        
         return services;
     }
 }

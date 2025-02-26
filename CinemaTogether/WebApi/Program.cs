@@ -1,4 +1,6 @@
 using Application;
+using FluentValidation;
+using FluentValidation.AspNetCore;
 using Infrastructure;
 using WebApi.Extensions;
 
@@ -8,6 +10,9 @@ builder.Services.AddHttpContextAccessor();
 builder.Services.AddRouting();
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
+
+builder.Services.AddFluentValidationAutoValidation();
+builder.Services.AddValidatorsFromAssembly(typeof(Program).Assembly, includeInternalTypes: true);
 
 builder.Services
     .AddApplication()
