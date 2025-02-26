@@ -4,6 +4,7 @@ using Application.Data;
 using Domain.Constants;
 using Domain.Entities;
 using Domain.Exceptions;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.EntityFrameworkCore;
 using Shared.Cryptography;
 
@@ -69,4 +70,31 @@ public class UserService(IApplicationDbContext context) : IUserService
         
         return user;
     }
+    
+    public async Task<UserPrivateInfoDto> GetUserPrivateInfoByIdAsync(Guid userId, CancellationToken cancellationToken = default)
+    {
+        var user = await context.Users
+            .AsNoTracking()
+            .Where(u => u.Id == userId)
+            .Include(u => u.City)
+            .Include(u => u.Role)
+            .Select(u => new UserPrivateInfoDto(
+                u.Email,
+                u.Username,
+                u.TwoFactorEnabled,
+                u.Role.Name == CommonConstants.AdminRole,
+                u.Name,
+                u.DateOfBirth,
+                u.Gender.ToString(),
+                u.ProfilePicturePath,
+                u.City.Name,
+                u.City.Country.Name))
+            .FirstOrDefaultAsync(cancellationToken);
+        
+        if (user == null)
+            throw new NotFoundException("User", "Id", userId.ToString());
+        
+        return user;
+    }
+    
 }

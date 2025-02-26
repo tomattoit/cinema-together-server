@@ -3,6 +3,7 @@ using Application.Common.Auth;
 using Application.Common.Constants;
 using Application.Common.Services;
 using Application.Data;
+using Domain.Constants;
 using Infrastructure.Auth;
 using Infrastructure.Services;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
@@ -57,7 +58,7 @@ public static class InfrastructureDependencyInjection
                 {
                     OnMessageReceived = context =>
                     {
-                        if (context.Request.Cookies.TryGetValue("token", out var token))
+                        if (context.Request.Cookies.TryGetValue(CommonConstants.DefaultTokenName, out var token))
                         {
                             context.Token = token;
                         }
