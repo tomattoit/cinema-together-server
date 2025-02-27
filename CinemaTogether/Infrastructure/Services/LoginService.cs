@@ -15,14 +15,13 @@ public class LoginService(
     public async Task<string> Login(string email, string password, CancellationToken cancellationToken)
     {
         var user = await context.Users
-            .Include(a => a.Role)
             .Where(u => u.Email == email)
             .AsNoTracking()
             .Select(a => new UserDto(
                 a.Id,
                 a.Email,
                 a.PasswordHash,
-                a.Role.Name)
+                a.Role)
             )
             .FirstOrDefaultAsync(cancellationToken);
 

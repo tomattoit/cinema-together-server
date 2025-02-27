@@ -2,6 +2,7 @@
 using Application.Data;
 using Microsoft.EntityFrameworkCore;
 using System.Reflection;
+using Domain.Enums;
 using Shared.Cryptography;
 
 namespace Infrastructure;
@@ -19,18 +20,6 @@ public class ApplicationDbContext(DbContextOptions<ApplicationDbContext> options
     {
         modelBuilder.ApplyConfigurationsFromAssembly(Assembly.GetExecutingAssembly());
         
-        modelBuilder.Entity<Role>().HasData(
-            new Role
-            {
-                Id = Guid.Parse("11111111-1111-1111-1111-111111111111"),
-                Name = "Admin"
-            },
-            new Role
-            {
-                Id = Guid.Parse("22222222-2222-2222-2222-222222222222"),
-                Name = "User"
-            });
-        
         modelBuilder.Entity<User>().HasData(
             new User
             {
@@ -41,8 +30,8 @@ public class ApplicationDbContext(DbContextOptions<ApplicationDbContext> options
                 TwoFactorEnabled = false,
                 Name = "Robby Krieger",
                 DateOfBirth = DateTime.Now.AddYears(-25),
-                Gender = Domain.Enums.Gender.Male,
-                RoleId = Guid.Parse("22222222-2222-2222-2222-222222222222")
+                Gender = Gender.Male,
+                Role = Role.User
             },
             new User
             {
@@ -53,8 +42,8 @@ public class ApplicationDbContext(DbContextOptions<ApplicationDbContext> options
                 TwoFactorEnabled = false,
                 Name = "John Densmore",
                 DateOfBirth = DateTime.Now.AddYears(-23),
-                Gender = Domain.Enums.Gender.Male,
-                RoleId = Guid.Parse("11111111-1111-1111-1111-111111111111")
+                Gender = Gender.Male,
+                Role = Role.Admin
             });
 
         base.OnModelCreating(modelBuilder);

@@ -1,9 +1,7 @@
 ﻿using System.Security.Claims;
 using Application.Common.Dto;
 using Application.Common.Services;
-using Domain.Entities;
 using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.JsonPatch;
 using Microsoft.AspNetCore.Mvc;
 using WebApi.Models;
 
@@ -64,5 +62,13 @@ public class UserController(IUserService userService) : ControllerBase
         await userService.UpdateProfileInfo(userId, dto, cancellationToken);
         
         return Results.NoContent();
+    }
+
+    [HttpGet("genders")]
+    public IResult GetGenders()
+    {
+        var genders = userService.GetGenders();
+        
+        return Results.Ok(genders);
     }
 }

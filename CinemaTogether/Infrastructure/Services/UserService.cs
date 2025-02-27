@@ -1,11 +1,9 @@
 ﻿using Application.Common.Dto;
 using Application.Common.Services;
 using Application.Data;
-using Domain.Constants;
 using Domain.Entities;
+using Domain.Enums;
 using Domain.Exceptions;
-using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.JsonPatch;
 using Microsoft.EntityFrameworkCore;
 using Shared.Cryptography;
 
@@ -43,7 +41,7 @@ public class UserService(IApplicationDbContext context) : IUserService
                 Email = email,
                 Username = username,
                 PasswordHash = Hasher.Hash(password),
-                RoleId = CommonConstants.UserRoleId
+                Role = Role.User,
             },
             cancellationToken);
         
@@ -78,12 +76,11 @@ public class UserService(IApplicationDbContext context) : IUserService
             .AsNoTracking()
             .Where(u => u.Id == userId)
             .Include(u => u.City)
-            .Include(u => u.Role)
             .Select(u => new UserPrivateInfoDto(
                 u.Email,
                 u.Username,
                 u.TwoFactorEnabled,
-                u.Role.Name == CommonConstants.AdminRole,
+                u.Role == Role.Admin,
                 u.Name,
                 u.DateOfBirth,
                 u.Gender.ToString(),
@@ -115,6 +112,16 @@ public class UserService(IApplicationDbContext context) : IUserService
         user.Username = userDto.Username;
         
         await context.SaveChangesAsync(cancellationToken);
+    }
+
+    public List<GenderDto> GetGenders()
+    {
+        var genderList = Enum.GetValues(typeof(Gender))
+            .Cast<Gender>()
+            .Select(g => new GenderDto(g, g.ToString()))
+            .ToList();
+        
+        return genderList;
     }
     
 }
