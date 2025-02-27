@@ -2,7 +2,7 @@
 
 namespace Application.Common.Dto;
 
-public record UserDto(
+public record UserAccountInfoDto(
     Guid Id,
     string Email,
     string PasswordHash,

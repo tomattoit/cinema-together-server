@@ -12,7 +12,9 @@ public interface IUserService
     
     Task RegisterAsync(string email, string password, string username, CancellationToken cancellationToken);
     
-    Task UpdateProfileInfo(Guid userId, UpdateUserInfoDto userDto, CancellationToken cancellationToken);
+    Task UpdateProfileInfoAsync(Guid userId, UpdateUserProfileDto userDto, CancellationToken cancellationToken);
     
     List<GenderDto> GetGenders();
+    
+    Task<List<UserListItemDto>> GetUsersAsync(CancellationToken cancellationToken);
 }

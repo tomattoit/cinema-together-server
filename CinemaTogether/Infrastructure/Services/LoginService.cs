@@ -17,7 +17,7 @@ public class LoginService(
         var user = await context.Users
             .Where(u => u.Email == email)
             .AsNoTracking()
-            .Select(a => new UserDto(
+            .Select(a => new UserAccountInfoDto(
                 a.Id,
                 a.Email,
                 a.PasswordHash,

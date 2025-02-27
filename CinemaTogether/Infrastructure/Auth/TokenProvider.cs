@@ -10,7 +10,7 @@ namespace Infrastructure.Auth;
 
 internal sealed class TokenProvider(IConfiguration configuration) : ITokenProvider
 {
-    public string Create(UserDto user)
+    public string Create(UserAccountInfoDto userAccountInfo)
     {
         string secretKey = configuration["Jwt:Secret"]!;
         var securityKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(secretKey));
@@ -23,9 +23,9 @@ internal sealed class TokenProvider(IConfiguration configuration) : ITokenProvid
         {
             Subject = new ClaimsIdentity(
             [
-                new Claim(JwtRegisteredClaimNames.Sub, user.Id.ToString()),
-                new Claim(JwtRegisteredClaimNames.Email, user.Email),
-                new Claim(ClaimTypes.Role, user.Role.ToString()),
+                new Claim(JwtRegisteredClaimNames.Sub, userAccountInfo.Id.ToString()),
+                new Claim(JwtRegisteredClaimNames.Email, userAccountInfo.Email),
+                new Claim(ClaimTypes.Role, userAccountInfo.Role.ToString()),
             ]),
             Expires = DateTime.UtcNow.AddMinutes(configuration.GetValue<int>("Jwt:ExpirationInMinutes")),
             SigningCredentials = credentials,

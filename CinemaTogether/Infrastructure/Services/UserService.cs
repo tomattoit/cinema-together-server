@@ -95,7 +95,7 @@ public class UserService(IApplicationDbContext context) : IUserService
         return user;
     }
 
-    public async Task UpdateProfileInfo(Guid userId, UpdateUserInfoDto userDto, CancellationToken cancellationToken = default)
+    public async Task UpdateProfileInfoAsync(Guid userId, UpdateUserProfileDto userDto, CancellationToken cancellationToken = default)
     {
         var user = await context.Users
             .FirstOrDefaultAsync(u => u.Id == userId, cancellationToken);
@@ -128,6 +128,20 @@ public class UserService(IApplicationDbContext context) : IUserService
             .ToList();
         
         return genderList;
+    }
+
+    public async Task<List<UserListItemDto>> GetUsersAsync(CancellationToken cancellationToken = default)
+    {
+        var users = await context.Users
+            .AsNoTracking()
+            .Select(u => new UserListItemDto(
+                u.Id,
+                u.Username,
+                u.Name,
+                u.Rating))
+            .ToListAsync(cancellationToken);
+        
+        return users;
     }
     
 }

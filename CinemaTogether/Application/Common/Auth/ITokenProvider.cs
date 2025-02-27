@@ -4,5 +4,5 @@ namespace Application.Common.Auth;
 
 public interface ITokenProvider
 {
-    string Create(UserDto account);
+    string Create(UserAccountInfoDto account);
 }

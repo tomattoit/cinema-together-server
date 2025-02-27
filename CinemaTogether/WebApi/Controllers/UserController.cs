@@ -64,7 +64,7 @@ public class UserController(IUserService userService) : ControllerBase
             return Results.Unauthorized();
         }
 
-        var dto = new UpdateUserInfoDto(
+        var dto = new UpdateUserProfileDto(
             model.Email,
             model.Username,
             model.Name,
@@ -73,7 +73,7 @@ public class UserController(IUserService userService) : ControllerBase
             model.ProfilePicturePath,
             model.CityId);
         
-        await userService.UpdateProfileInfo(userId, dto, cancellationToken);
+        await userService.UpdateProfileInfoAsync(userId, dto, cancellationToken);
         
         return Results.NoContent();
     }
@@ -86,5 +86,16 @@ public class UserController(IUserService userService) : ControllerBase
         var genders = userService.GetGenders();
         
         return Results.Ok(genders);
+    }
+
+    [HttpGet]
+    [ProducesResponseType(StatusCodes.Status200OK)]
+    [ProducesResponseType(StatusCodes.Status404NotFound)]
+    [Produces(typeof(List<UserListItemDto>))]
+    public async Task<IResult> GetUsers(CancellationToken cancellationToken)
+    {
+        var users = await userService.GetUsersAsync(cancellationToken);
+        
+        return Results.Ok(users);
     }
 }

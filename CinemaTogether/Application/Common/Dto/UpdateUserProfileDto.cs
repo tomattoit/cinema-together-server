@@ -2,7 +2,7 @@
 
 namespace Application.Common.Dto;
 
-public record UpdateUserInfoDto(
+public record UpdateUserProfileDto(
     string Email,
     string Username,
     string Name,
