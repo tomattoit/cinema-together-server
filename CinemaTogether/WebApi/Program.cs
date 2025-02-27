@@ -1,7 +1,9 @@
+using System.Reflection;
 using Application;
 using FluentValidation;
 using FluentValidation.AspNetCore;
 using Infrastructure;
+using Microsoft.OpenApi.Models;
 using WebApi.Extensions;
 using WebApi.Middlewares;
 
@@ -10,7 +12,15 @@ var builder = WebApplication.CreateBuilder(args);
 builder.Services.AddHttpContextAccessor();
 builder.Services.AddRouting();
 builder.Services.AddEndpointsApiExplorer();
-builder.Services.AddSwaggerGen();
+
+builder.Services.AddSwaggerGen(c =>
+{
+    var xmlFile = $"{Assembly.GetExecutingAssembly().GetName().Name}.xml";
+    var xmlPath = Path.Combine(AppContext.BaseDirectory, xmlFile);
+    c.IncludeXmlComments(xmlPath);
+    
+    c.SwaggerDoc("v1", new OpenApiInfo { Title = "CinemaTogether", Version = "v1" });
+});
 
 builder.Services.AddFluentValidationAutoValidation();
 builder.Services.AddValidatorsFromAssembly(typeof(Program).Assembly, includeInternalTypes: true);
@@ -26,10 +36,14 @@ builder.Services.AddControllers();
 
 var app = builder.Build();
 
+app.SeedDatabase();
+
 if (app.Environment.IsDevelopment())
 {
     app.UseSwagger();
-    app.UseSwaggerUI();
+    app.UseSwaggerUI(c =>
+        c.SwaggerEndpoint("/swagger/v1/swagger.json", "CinemaTogether v1")
+        );
 }
 
 app.UseExceptionHandler();

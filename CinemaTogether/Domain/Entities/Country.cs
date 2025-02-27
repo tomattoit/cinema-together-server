@@ -5,6 +5,7 @@ namespace Domain.Entities;
 public class Country : IBaseEntity
 {
     public Guid Id { get; set; }
+    public string Iso2 { get; set; }
 
     public string Name { get; set; }
 

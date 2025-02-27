@@ -11,6 +11,9 @@ namespace WebApi.Controllers;
 [Route ("api/users")]
 public class UserController(IUserService userService) : ControllerBase
 {
+    [ProducesResponseType(StatusCodes.Status201Created)]
+    [ProducesResponseType(StatusCodes.Status400BadRequest)]
+    [ProducesErrorResponseType(typeof(ProblemDetails))]
     [HttpPost("signup")]
     public async Task<IResult> SignUp([FromBody] RegisterModel model, CancellationToken cancellationToken)
     {
@@ -18,7 +21,11 @@ public class UserController(IUserService userService) : ControllerBase
 
         return Results.Created();
     }
-
+    
+    [ProducesResponseType(StatusCodes.Status200OK)]
+    [ProducesResponseType(StatusCodes.Status404NotFound)]
+    [ProducesErrorResponseType(typeof(ProblemDetails))]
+    [Produces(typeof(UserPublicInfoDto))]
     [HttpGet("{id:guid}")]
     public async Task<IResult> GetProfileInfo(Guid id, CancellationToken cancellationToken)
     {
@@ -27,6 +34,9 @@ public class UserController(IUserService userService) : ControllerBase
         return Results.Ok(user);
     }
 
+    [ProducesResponseType(StatusCodes.Status200OK)]
+    [ProducesResponseType(StatusCodes.Status401Unauthorized)]
+    [Produces(typeof(UserPrivateInfoDto))]
     [Authorize]
     [HttpGet("me")]
     public async Task<IResult> GetMeAsync(CancellationToken cancellationToken)
@@ -41,6 +51,10 @@ public class UserController(IUserService userService) : ControllerBase
         return Results.Ok(user);
     }
 
+    [ProducesResponseType(StatusCodes.Status204NoContent)]
+    [ProducesResponseType(StatusCodes.Status401Unauthorized)]
+    [ProducesResponseType(StatusCodes.Status400BadRequest)]
+    [ProducesErrorResponseType(typeof(ValidationProblemDetails))]
     [Authorize]
     [HttpPut("me")]
     public async Task<IResult> PatchMeAsync(UpdateUserModel model, CancellationToken cancellationToken)
@@ -64,6 +78,8 @@ public class UserController(IUserService userService) : ControllerBase
         return Results.NoContent();
     }
 
+    [ProducesResponseType(StatusCodes.Status200OK)]
+    [Produces(typeof(List<GenderDto>))]
     [HttpGet("genders")]
     public IResult GetGenders()
     {

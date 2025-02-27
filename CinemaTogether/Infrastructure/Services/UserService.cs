@@ -103,6 +103,12 @@ public class UserService(IApplicationDbContext context) : IUserService
         if (user == null)
             throw new NotFoundException("User", "Id", userId.ToString());
         
+        if (user.Email == userDto.Email)
+            throw new PropertyNotUniqueException("Email");
+        
+        if (user.Username == userDto.Username)
+            throw new PropertyNotUniqueException("Username");
+            
         user.Email = userDto.Email;
         user.Name = userDto.Name;
         user.CityId = userDto.CityId;

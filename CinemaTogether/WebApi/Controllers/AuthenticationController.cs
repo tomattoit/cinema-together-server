@@ -1,6 +1,5 @@
 ﻿using Domain.Constants;
 using Application.Common.Services;
-using MediatR;
 using Microsoft.AspNetCore.Mvc;
 using WebApi.Models;
 
@@ -13,6 +12,9 @@ public class AuthenticationController(
     ILoginService loginService)
     : ControllerBase
 {
+    [ProducesResponseType(StatusCodes.Status401Unauthorized)]
+    [ProducesResponseType(StatusCodes.Status200OK)]
+    [ProducesErrorResponseType(typeof(ProblemDetails))]
     [HttpPost("login")]
     public async Task<IResult> Login([FromBody] LoginModel model, CancellationToken cancellationToken)
     {
