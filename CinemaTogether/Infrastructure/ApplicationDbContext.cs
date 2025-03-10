@@ -15,10 +15,27 @@ public class ApplicationDbContext(DbContextOptions<ApplicationDbContext> options
     public DbSet<Country> Countries { get; set; }
 
     public DbSet<City> Cities { get; set; }
+    
+    public DbSet<UserFriend> UserFriends { get; set; }
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
         modelBuilder.ApplyConfigurationsFromAssembly(Assembly.GetExecutingAssembly());
+        
+        modelBuilder.Entity<UserFriend>()
+            .HasKey(uf => new { uf.UserId, uf.FriendId });
+
+        modelBuilder.Entity<UserFriend>()
+            .HasOne(uf => uf.User)
+            .WithMany(u => u.Friends)
+            .HasForeignKey(uf => uf.UserId)
+            .OnDelete(DeleteBehavior.NoAction);
+
+        modelBuilder.Entity<UserFriend>()
+            .HasOne(uf => uf.Friend)
+            .WithMany(u => u.FriendOf)
+            .HasForeignKey(uf => uf.FriendId)
+            .OnDelete(DeleteBehavior.NoAction);
         
         modelBuilder.Entity<User>().HasData(
             new User

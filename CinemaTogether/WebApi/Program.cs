@@ -36,8 +36,6 @@ builder.Services.AddControllers();
 
 var app = builder.Build();
 
-app.SeedDatabase();
-
 if (app.Environment.IsDevelopment())
 {
     app.UseSwagger();
@@ -51,6 +49,8 @@ app.UseExceptionHandler();
 app.MapControllers();
 
 app.ApplyMigrations();
+
+app.SeedDatabase();
 
 app.UseHttpsRedirection();
 

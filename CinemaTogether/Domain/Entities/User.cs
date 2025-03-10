@@ -32,4 +32,8 @@ public class User : IBaseEntity
     public City City { get; set; }
     
     public Role Role { get; set; }
+    
+    public List<UserFriend> Friends { get; set; }
+    
+    public List<UserFriend> FriendOf { get; set; }
 }

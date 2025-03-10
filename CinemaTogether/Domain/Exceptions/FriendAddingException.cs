@@ -1,6 +1,3 @@
 ﻿namespace Domain.Exceptions;
 
-public class FriendAddingException
-{
-    
-}
+public class FriendAddingException(string message) : Exception(message) {}

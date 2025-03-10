@@ -8,7 +8,10 @@ public interface IApplicationDbContext
     DbSet<City> Cities { get; }
 
     DbSet<Country> Countries { get; }
+    
     DbSet<User> Users { get; }
 
+    DbSet<UserFriend> UserFriends { get; }
+    
     Task<int> SaveChangesAsync(CancellationToken cancellationToken = default);
 }
