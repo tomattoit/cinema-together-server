@@ -19,7 +19,7 @@ public class DatabaseSeeder(ApplicationDbContext context)
 
     private void LoadCountries()
     {
-        var path = Path.Combine(Directory.GetCurrentDirectory(), "Data\\GeoNames\\countries.txt");
+        var path = Path.Combine(Directory.GetCurrentDirectory(), "Data/GeoNames/countries.txt");
 
         if (!File.Exists(path))
         {
