@@ -13,5 +13,7 @@ public interface IApplicationDbContext
 
     DbSet<UserFriend> UserFriends { get; }
     
+    DbSet<EmailVerificationToken> EmailVerificationTokens { get; }
+    
     Task<int> SaveChangesAsync(CancellationToken cancellationToken = default);
 }

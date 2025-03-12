@@ -12,6 +12,8 @@ public class User : IBaseEntity
     public required string PasswordHash { get; set; }
 
     public required string Username { get; set; }
+    
+    public bool IsEmailVerified { get; set; }
 
     public bool TwoFactorEnabled { get; set; }
     

@@ -1,15 +1,22 @@
 ﻿using Application.Common.Dto;
 using Application.Common.Services;
 using Application.Data;
+using Domain.Constants;
 using Domain.Entities;
 using Domain.Enums;
 using Domain.Exceptions;
+using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Routing;
 using Microsoft.EntityFrameworkCore;
 using Shared.Cryptography;
 
 namespace Infrastructure.Services;
 
-public class UserService(IApplicationDbContext context) : IUserService
+public class UserService(
+    IApplicationDbContext context,
+    IEmailSender emailSender,
+    LinkGenerator linkGenerator,
+    IHttpContextAccessor httpContextAccessor) : IUserService
 {
     public async Task RegisterAsync(
         string email,
@@ -35,18 +42,62 @@ public class UserService(IApplicationDbContext context) : IUserService
             throw new PropertyNotUniqueException("Email");
         }
         
+        var userId = Guid.NewGuid();
+        var tokenId = Guid.NewGuid();
+        
         await context.Users.AddAsync(
             new User
             {
+                Id = userId,
                 Email = email,
                 Username = username,
                 PasswordHash = Hasher.Hash(password),
                 Role = Role.User,
+                IsEmailVerified = false
+            },
+            cancellationToken);
+
+        await context.EmailVerificationTokens.AddAsync(
+            new EmailVerificationToken
+            {
+                Id = tokenId,
+                UserId = userId,
             },
             cancellationToken);
         
+        var link = GenerateLink(tokenId.ToString());
+        var subject = "Cinema Together email confirmation";
+        var message = "Please confirm your email address by clicking this <a href=\"" + link + "\">link</a>";
+        
+        await emailSender.SendEmailAsync(email, subject, message, cancellationToken);
         await context.SaveChangesAsync(cancellationToken);
     }
+
+    public async Task VerifyEmailAsync(Guid tokenId, CancellationToken cancellationToken = default)
+    {
+        var token = await context.EmailVerificationTokens
+            .FirstOrDefaultAsync(t => t.Id == tokenId, cancellationToken);
+        
+        if (token == null)
+            throw new NotFoundException("Email Verification Token", "Id", tokenId.ToString());
+        
+        var user = await context.Users
+            .FirstOrDefaultAsync(u => u.Id == token.UserId, cancellationToken);
+        
+        if (user == null)
+            throw new NotFoundException("User", "Id", token.UserId.ToString());
+        
+        user.IsEmailVerified = true;
+
+        context.EmailVerificationTokens.Remove(token);
+        
+        await context.SaveChangesAsync(cancellationToken);
+    }
+
+    private string GenerateLink(string tokenId) => linkGenerator.GetUriByName(
+        httpContextAccessor.HttpContext!,
+        CommonConstants.VerifyEmailEndpointName,
+        new { verificationTokenId = tokenId }) ?? string.Empty;
 
     public async Task<UserPublicInfoDto> GetUserPublicInfoByIdAsync(Guid userId, CancellationToken cancellationToken = default)
     {

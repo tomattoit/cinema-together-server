@@ -1,6 +1,7 @@
 ﻿using System.Security.Claims;
 using Application.Common.Dto;
 using Application.Common.Services;
+using Domain.Constants;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using WebApi.Models;
@@ -9,7 +10,7 @@ namespace WebApi.Controllers;
 
 [ApiController]
 [Route ("api/users")]
-public class UserController(IUserService userService, IEmailSender emailSender) : ControllerBase
+public class UserController(IUserService userService) : ControllerBase
 {
     [ProducesResponseType(StatusCodes.Status201Created)]
     [ProducesResponseType(StatusCodes.Status400BadRequest)]
@@ -17,11 +18,20 @@ public class UserController(IUserService userService, IEmailSender emailSender) 
     [HttpPost("signup")]
     public async Task<IResult> SignUp([FromBody] RegisterModel model, CancellationToken cancellationToken)
     {
-        await emailSender.SendEmailAsync(model.Email, model.Username, "welcome", cancellationToken);
-        
         await userService.RegisterAsync(model.Email, model.Password, model.Username, cancellationToken);
         
         return Results.Created();
+    }
+
+    [HttpGet("email-verification")]
+    [EndpointName(CommonConstants.VerifyEmailEndpointName)]
+    public async Task<IResult> VerifyEmail([FromQuery] string verificationTokenId, CancellationToken cancellationToken)
+    {
+        var tokenId = Guid.Parse(verificationTokenId);
+        
+        await userService.VerifyEmailAsync(tokenId, cancellationToken);
+        
+        return Results.NoContent();
     }
     
     [ProducesResponseType(StatusCodes.Status200OK)]

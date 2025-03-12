@@ -17,7 +17,9 @@ public class ApplicationDbContext(DbContextOptions<ApplicationDbContext> options
     public DbSet<City> Cities { get; set; }
     
     public DbSet<UserFriend> UserFriends { get; set; }
-
+    
+    public DbSet<EmailVerificationToken> EmailVerificationTokens { get; set; }
+    
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
         modelBuilder.ApplyConfigurationsFromAssembly(Assembly.GetExecutingAssembly());
@@ -46,6 +48,7 @@ public class ApplicationDbContext(DbContextOptions<ApplicationDbContext> options
                 PasswordHash = Hasher.Hash("A-123123"),
                 TwoFactorEnabled = false,
                 Name = "Robby Krieger",
+                IsEmailVerified = true,
                 DateOfBirth = DateTime.Now.AddYears(-25),
                 Gender = Gender.Male,
                 Role = Role.User
@@ -57,6 +60,7 @@ public class ApplicationDbContext(DbContextOptions<ApplicationDbContext> options
                 Username = "Test2",
                 PasswordHash = Hasher.Hash("A-123123"),
                 TwoFactorEnabled = false,
+                IsEmailVerified = true,
                 Name = "John Densmore",
                 DateOfBirth = DateTime.Now.AddYears(-23),
                 Gender = Gender.Male,

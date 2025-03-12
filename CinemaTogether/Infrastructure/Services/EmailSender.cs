@@ -8,8 +8,8 @@ public class EmailSender : IEmailSender
 {
     public async Task SendEmailAsync(string email, string subject, string message, CancellationToken cancellationToken = default)
     {
-        var mail = "";
-        var password = "";
+        var mail = "cinematogether01@gmail.com";
+        var password = "toox xuhp twvr dafx";
 
         var client = new SmtpClient("smtp.gmail.com", 587)
         {
@@ -17,8 +17,12 @@ public class EmailSender : IEmailSender
             Credentials = new NetworkCredential(mail, password),
             UseDefaultCredentials = false
         };
+        
+        var msg = new MailMessage(mail, email, subject, message);
+        msg.IsBodyHtml = true;
 
-        await client.SendMailAsync(mail, email, subject, message, cancellationToken);
+        await client.SendMailAsync(msg, cancellationToken);
+        
         client.Dispose();
     }
 }
