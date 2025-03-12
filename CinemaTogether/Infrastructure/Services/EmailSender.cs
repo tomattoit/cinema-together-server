@@ -8,8 +8,8 @@ public class EmailSender : IEmailSender
 {
     public async Task SendEmailAsync(string email, string subject, string message, CancellationToken cancellationToken = default)
     {
-        var mail = "artemij1256@gmail.com";
-        var password = "ubbx rpux surp zclk";
+        var mail = "";
+        var password = "";
 
         var client = new SmtpClient("smtp.gmail.com", 587)
         {
