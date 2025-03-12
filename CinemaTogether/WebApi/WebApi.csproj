@@ -8,6 +8,7 @@
     <NoWarn>$(NoWarn);1591</NoWarn>
     <NoWarn>$(NoWarn);1573</NoWarn>
     <DockerDefaultTargetOS>Linux</DockerDefaultTargetOS>
+    <UserSecretsId>996a52f6-227b-49a7-ad56-7860a75c3111</UserSecretsId>
   </PropertyGroup>
 
   <ItemGroup>

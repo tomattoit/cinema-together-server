@@ -13,6 +13,11 @@ builder.Services.AddHttpContextAccessor();
 builder.Services.AddRouting();
 builder.Services.AddEndpointsApiExplorer();
 
+builder.Services.AddHttpsRedirection(options =>
+{
+    options.HttpsPort = 5001;
+});
+
 builder.Services.AddSwaggerGen(c =>
 {
     var xmlFile = $"{Assembly.GetExecutingAssembly().GetName().Name}.xml";
@@ -36,12 +41,13 @@ builder.Services.AddControllers();
 
 var app = builder.Build();
 
+//app.Urls.Add("https://[::]:5001");
+
 if (app.Environment.IsDevelopment())
 {
     app.UseSwagger();
     app.UseSwaggerUI(c =>
-        c.SwaggerEndpoint("/swagger/v1/swagger.json", "CinemaTogether v1")
-        );
+        c.SwaggerEndpoint("/swagger/v1/swagger.json", "CinemaTogether v1"));
 }
 
 app.UseExceptionHandler();

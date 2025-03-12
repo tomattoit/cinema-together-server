@@ -1,4 +1,5 @@
-﻿using Application.Common.Services;
+﻿using Application.Common.Dto;
+using Application.Common.Services;
 using Microsoft.AspNetCore.Mvc;
 
 namespace WebApi.Controllers;
@@ -7,6 +8,7 @@ namespace WebApi.Controllers;
 [Route("api/countries")]
 public class CountryController(ICountryService countryService) : ControllerBase
 {
+    [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(List<CountryDto>))]
     [HttpGet]
     public async Task<IResult> GetCountries()
     {
@@ -15,6 +17,7 @@ public class CountryController(ICountryService countryService) : ControllerBase
         return Results.Ok(countries);
     }
     
+    [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(List<CityDto>))]
     [HttpGet("{countryId:guid}/cities")]
     public async Task<IResult> GetCities(Guid countryId)
     {

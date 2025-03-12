@@ -79,7 +79,8 @@ public static class InfrastructureDependencyInjection
             .AddScoped<ILoginService, LoginService>()
             .AddScoped<IUserService, UserService>()
             .AddScoped<ICountryService, CountryService>()
-            .AddScoped<IFriendService, FriendService>();
+            .AddScoped<IFriendService, FriendService>()
+            .AddScoped<IEmailSender, EmailSender>();
         
         return services;
     }
