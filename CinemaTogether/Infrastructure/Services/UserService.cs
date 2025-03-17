@@ -9,6 +9,7 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Routing;
 using Microsoft.EntityFrameworkCore;
 using Shared.Cryptography;
+using WebApi.Models;
 
 namespace Infrastructure.Services;
 
@@ -181,18 +182,29 @@ public class UserService(
         return genderList;
     }
 
-    public async Task<List<UserListItemDto>> GetUsersAsync(CancellationToken cancellationToken = default)
+    public async Task<PaginatedResponse<UserListItemDto>> GetUsersAsync(
+        int page,
+        int pageSize,
+        string searchString,
+        CancellationToken cancellationToken)
     {
-        var users = await context.Users
-            .AsNoTracking()
-            .Select(u => new UserListItemDto(
-                u.Id,
-                u.Username,
-                u.Name,
-                u.Rating))
-            .ToListAsync(cancellationToken);
+        var query = context.Users.AsQueryable();
+
+        if (!string.IsNullOrWhiteSpace(searchString))
+        {
+            query = query.Where(u => u.Name.Contains(searchString) || u.Username.Contains(searchString));
+        }
         
-        return users;
+        var totalCount = await query.CountAsync(cancellationToken);
+        
+        var users = await query
+            .Skip((page - 1) * pageSize)
+            .Take(pageSize)
+            .Select(u => new UserListItemDto(u.Id, u.Username, u.Name, u.Rating))
+            .ToListAsync(cancellationToken);
+
+        var paginatedResponse = new PaginatedResponse<UserListItemDto>(users, totalCount, page, pageSize);
+        
+        return paginatedResponse;
     }
-    
 }

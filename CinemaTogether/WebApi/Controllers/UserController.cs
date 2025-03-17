@@ -103,10 +103,18 @@ public class UserController(IUserService userService) : ControllerBase
     [HttpGet]
     [ProducesResponseType(StatusCodes.Status200OK)]
     [ProducesResponseType(StatusCodes.Status404NotFound)]
-    [Produces(typeof(List<UserListItemDto>))]
-    public async Task<IResult> GetUsers(CancellationToken cancellationToken)
+    [Produces(typeof(PaginatedResponse<UserListItemDto>))]
+    public async Task<IResult> GetUsers(
+        CancellationToken cancellationToken,
+        [FromQuery] int page = 1,
+        [FromQuery] int pageSize = 10,
+        [FromQuery] string searchString = null)
     {
-        var users = await userService.GetUsersAsync(cancellationToken);
+        var users = await userService.GetUsersAsync(
+            page,
+            pageSize,
+            searchString,
+            cancellationToken);
         
         return Results.Ok(users);
     }

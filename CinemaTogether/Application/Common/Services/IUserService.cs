@@ -1,4 +1,5 @@
 ﻿using Application.Common.Dto;
+using WebApi.Models;
 
 namespace Application.Common.Services;
 
@@ -16,5 +17,5 @@ public interface IUserService
     
     List<GenderDto> GetGenders();
     
-    Task<List<UserListItemDto>> GetUsersAsync(CancellationToken cancellationToken);
+    Task<PaginatedResponse<UserListItemDto>> GetUsersAsync(int page, int pageSize, string searchString, CancellationToken cancellationToken);
 }
