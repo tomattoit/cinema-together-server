@@ -15,5 +15,11 @@ public interface IApplicationDbContext
     
     DbSet<EmailVerificationToken> EmailVerificationTokens { get; }
     
+    DbSet<Movie> Movies { get; }
+    
+    DbSet<MovieGenre> MovieGenres { get; }
+    
+    DbSet<Genre> Genres { get; }
+    
     Task<int> SaveChangesAsync(CancellationToken cancellationToken = default);
 }
