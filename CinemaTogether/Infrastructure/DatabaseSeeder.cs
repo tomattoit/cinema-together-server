@@ -1,10 +1,11 @@
 ﻿using System.Text.Json;
 using Domain.Entities;
+using Microsoft.Extensions.Configuration;
 using RestSharp;
 
 namespace Infrastructure;
 
-public class DatabaseSeeder(ApplicationDbContext context)
+public class DatabaseSeeder(ApplicationDbContext context, IConfiguration config)
 {
     public void Seed()
     {
@@ -24,20 +25,35 @@ public class DatabaseSeeder(ApplicationDbContext context)
         }
     }
 
+    public string GetApiContent(RestClient client, RestRequest request)
+    {
+        string json = string.Empty;
+        try
+        {
+            json = client.Get(request).Content;
+        }
+        catch (Exception e)
+        {
+            Thread.Sleep(250);
+            json = GetApiContent(client, request);
+        }
+        return json;
+    }
+    
     private void LoadMovies()
     {
-        var token = "";
+        var token = config["MoviesApi:Key"];
         var ids = new List<int>();
         for (int page = 1; page <= 10; page++)
         {
             var options =
                 new RestClientOptions(
-                    $"https://api.themoviedb.org/3/discover/movie?include_adult=false&include_video=false&language=en-US&page={page}&sort_by=original_title.asc&vote_count.gte=309");
+                    $"https://api.themoviedb.org/3/discover/movie?include_adult=false&include_video=false&language=en-US&page={page}&sort_by=title.asc&vote_count.gte=309");
             var client = new RestClient(options);
             var request = new RestRequest("");
             request.AddHeader("accept", "application/json");
             request.AddHeader("Authorization", $"Bearer {token}");
-            var response = client.Get(request).Content;
+            var response = GetApiContent(client, request);
             
             using JsonDocument jsonDoc = JsonDocument.Parse(response!);
             var root = jsonDoc.RootElement.GetProperty("results");
@@ -55,7 +71,7 @@ public class DatabaseSeeder(ApplicationDbContext context)
             var request = new RestRequest("");
             request.AddHeader("accept", "application/json");
             request.AddHeader("Authorization", $"Bearer {token}");
-            var response = client.Get(request).Content;
+            var response = GetApiContent(client, request);
 
             Movie movie;
 
@@ -98,7 +114,7 @@ public class DatabaseSeeder(ApplicationDbContext context)
             request = new RestRequest("");
             request.AddHeader("accept", "application/json");
             request.AddHeader("Authorization", $"Bearer {token}");
-            response = client.Get(request).Content;
+            response = GetApiContent(client, request);
 
             using (JsonDocument jsonDoc = JsonDocument.Parse(response!))
             {

@@ -9,7 +9,7 @@ public static class DatabaseSeederExtension
     {
         using var scope = app.Services.CreateScope();
         var appDbContext = scope.ServiceProvider.GetService<ApplicationDbContext>();
-        var seeder = new DatabaseSeeder(appDbContext);
+        var seeder = new DatabaseSeeder(appDbContext, app.Configuration);
         seeder.Seed();
     }
 }

@@ -1,15 +1,16 @@
 ﻿using Application.Common.Services;
 using System.Net;
 using System.Net.Mail;
+using Microsoft.Extensions.Configuration;
 
 namespace Infrastructure.Services;
 
-public class EmailSender : IEmailSender
+public class EmailSender(IConfiguration configuration) : IEmailSender
 {
     public async Task SendEmailAsync(string email, string subject, string message, CancellationToken cancellationToken = default)
     {
-        var mail = "cinematogether01@gmail.com";
-        var password = "toox xuhp twvr dafx";
+        var mail = configuration["Email:Address"];
+        var password = configuration["Email:Password"];
 
         var client = new SmtpClient("smtp.gmail.com", 587)
         {
