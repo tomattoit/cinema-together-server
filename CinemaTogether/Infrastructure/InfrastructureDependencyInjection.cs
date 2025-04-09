@@ -80,7 +80,8 @@ public static class InfrastructureDependencyInjection
             .AddScoped<IUserService, UserService>()
             .AddScoped<ICountryService, CountryService>()
             .AddScoped<IFriendService, FriendService>()
-            .AddScoped<IEmailSender, EmailSender>();
+            .AddScoped<IEmailSender, EmailSender>()
+            .AddScoped<IMovieService, MovieService>();
         
         return services;
     }
