@@ -21,5 +21,7 @@ public interface IApplicationDbContext
     
     DbSet<Genre> Genres { get; }
     
+    DbSet<MovieUserRate> MovieUserRates { get; }
+    
     Task<int> SaveChangesAsync(CancellationToken cancellationToken = default);
 }

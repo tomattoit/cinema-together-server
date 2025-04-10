@@ -35,7 +35,11 @@ public class User : IBaseEntity
     
     public Role Role { get; set; }
     
-    public List<UserFriend> Friends { get; set; }
+    public List<UserFriend> Friends { get; }
     
-    public List<UserFriend> FriendOf { get; set; }
+    public List<UserFriend> FriendOf { get; }
+    
+    public List<Movie> RatedMovies { get; }
+
+    public List<MovieUserRate> MovieUserRates { get; }
 }

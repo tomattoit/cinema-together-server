@@ -26,6 +26,8 @@ public class ApplicationDbContext(DbContextOptions<ApplicationDbContext> options
     
     public DbSet<Genre> Genres { get; set; }
     
+    public DbSet<MovieUserRate> MovieUserRates { get; set; }
+    
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
         modelBuilder.ApplyConfigurationsFromAssembly(Assembly.GetExecutingAssembly());
@@ -57,6 +59,13 @@ public class ApplicationDbContext(DbContextOptions<ApplicationDbContext> options
             .HasOne(mg => mg.Genre)
             .WithMany(g => g.MovieGenres)
             .HasForeignKey(fg => fg.GenreId);
+        
+        modelBuilder.Entity<User>()
+            .HasMany(e => e.RatedMovies)
+            .WithMany(e => e.UsersRated)
+            .UsingEntity<MovieUserRate>(
+                m => m.HasOne<Movie>().WithMany().HasForeignKey(e => e.MovieId),
+                u => u.HasOne<User>().WithMany().HasForeignKey(e => e.UserId));
 
         modelBuilder.Entity<Genre>().HasData(
             new Genre { Id = Guid.Parse("048291de-5df2-43cb-9b59-ddcc7ba2f3d4"), ApiId = 28, Name = "Action" },

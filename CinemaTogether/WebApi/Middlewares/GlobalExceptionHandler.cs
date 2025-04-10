@@ -45,6 +45,15 @@ internal sealed class GlobalExceptionHandler(ILogger<GlobalExceptionHandler> log
                     exception.Message,
                     "https://datatracker.ietf.org/doc/html/rfc7231#section-6.5.1");
                 break;
+            
+            case RateOutOfRangeException:
+                status = StatusCodes.Status400BadRequest;
+                problemDetails = CreateProblemDetails(
+                    status,
+                    "Rate out of range",
+                    exception.Message,
+                    "https://datatracker.ietf.org/doc/html/rfc7231#section-6.5.1");
+                break;
 
             default:
                 problemDetails = CreateProblemDetails(
