@@ -44,6 +44,9 @@ public class MovieService(IApplicationDbContext context) : IMovieService
             
         var totalCount = await query.CountAsync(cancellationToken);
         
+        if (totalCount < 1)
+            throw new NotFoundException("Movie", "Id", "Any");
+        
         var movies = await query
             .AsNoTracking()
             .Skip((page - 1) * pageSize)
@@ -56,7 +59,7 @@ public class MovieService(IApplicationDbContext context) : IMovieService
         return paginatedResponse;
     }
 
-    public async Task RateMovie(Guid movieId, Guid userId, decimal rate, CancellationToken cancellationToken)
+    public async Task ReviewMovie(Guid movieId, Guid userId, decimal rate, string comment, CancellationToken cancellationToken)
     {
         if (rate > 10 || rate < 0)
             throw new RateOutOfRangeException();
@@ -66,7 +69,7 @@ public class MovieService(IApplicationDbContext context) : IMovieService
         if (movie == null)
             throw new NotFoundException("Movie", "Id", movieId.ToString());
 
-        if (await context.MovieUserRates.AnyAsync(
+        if (await context.MovieReviews.AnyAsync(
                 m => m.MovieId == movieId && m.UserId == userId,
                 cancellationToken))
             throw new PropertyNotUniqueException("Rate");
@@ -74,38 +77,66 @@ public class MovieService(IApplicationDbContext context) : IMovieService
         movie.Rating += rate;
         movie.RatingCount++;
 
-        var rateEntity = new MovieUserRate
+        var rateEntity = new Domain.Entities.MovieReview
         {
             MovieId = movieId,
             UserId = userId
         };
         
-        await context.MovieUserRates.AddAsync(rateEntity, cancellationToken);
+        await context.MovieReviews.AddAsync(rateEntity, cancellationToken);
         
         await context.SaveChangesAsync(cancellationToken);
     }
 
-    public async Task<PaginatedResponse<UserRate>> GetUserRates(
+    public async Task<PaginatedResponse<MovieReviewDto>> GetUserReviews(
         Guid userId,
         int page,
         int pageSize,
         CancellationToken cancellationToken)
     {
-        var userRates = await context.MovieUserRates
+        var reviews = await context.MovieReviews
             .AsNoTracking()
             .Include(m => m.Movie)
             .Where(m => m.UserId == userId)
             .Select(
-                m => new UserRate(
+                m => new MovieReviewDto(
                     new MovieListItem(
                         m.MovieId,
                         m.Movie.Title,
                         m.Movie.ReleaseDate,
                         m.Movie.PosterPath,
                         m.Movie.RatingTmdb),
-                m.Rate))
+                    m.Rate,
+                    m.Comment))
             .ToListAsync(cancellationToken);
         
-        return new PaginatedResponse<UserRate>(userRates, userRates.Count, page, pageSize);
+        if (reviews == null)
+            throw new NotFoundException("Reviews", "User Id", userId.ToString());
+        
+        return new PaginatedResponse<MovieReviewDto>(reviews, reviews.Count, page, pageSize);
+    }
+
+    public async Task<PaginatedResponse<MovieReviewDto>> GetMovieReviews(Guid movieId, int page, int pageSize, CancellationToken cancellationToken)
+    {
+        var reviews = await context.MovieReviews
+            .AsNoTracking()
+            .Include(m => m.Movie)
+            .Where(m => m.MovieId == movieId)
+            .Select(
+                m => new MovieReviewDto(
+                    new MovieListItem(
+                        m.MovieId,
+                        m.Movie.Title,
+                        m.Movie.ReleaseDate,
+                        m.Movie.PosterPath,
+                        m.Movie.RatingTmdb),
+                    m.Rate,
+                    m.Comment))
+            .ToListAsync(cancellationToken);
+        
+        if (reviews == null)
+            throw new NotFoundException("Reviews", "Movie Id", movieId.ToString());
+        
+        return new PaginatedResponse<MovieReviewDto>(reviews, reviews.Count, page, pageSize);
     }
 }

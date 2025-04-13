@@ -8,7 +8,7 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
 
-namespace Persistence.Migrations
+namespace Infrastructure.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
     partial class ApplicationDbContextModelSnapshot : ModelSnapshot
@@ -276,12 +276,16 @@ namespace Persistence.Migrations
                     b.ToTable("MovieGenres");
                 });
 
-            modelBuilder.Entity("Domain.Entities.MovieUserRate", b =>
+            modelBuilder.Entity("Domain.Entities.MovieReview", b =>
                 {
-                    b.Property<Guid>("MovieId")
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
                         .HasColumnType("uniqueidentifier");
 
-                    b.Property<Guid>("UserId")
+                    b.Property<string>("Comment")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<Guid>("MovieId")
                         .HasColumnType("uniqueidentifier");
 
                     b.Property<Guid?>("MovieId1")
@@ -290,10 +294,18 @@ namespace Persistence.Migrations
                     b.Property<decimal>("Rate")
                         .HasColumnType("decimal(18,2)");
 
+                    b.Property<Guid>("UserId")
+                        .HasColumnType("uniqueidentifier");
+
                     b.Property<Guid?>("UserId1")
                         .HasColumnType("uniqueidentifier");
 
-                    b.HasKey("MovieId", "UserId");
+                    b.HasKey("Id");
+
+                    b.HasIndex("Id")
+                        .IsUnique();
+
+                    b.HasIndex("MovieId");
 
                     b.HasIndex("MovieId1");
 
@@ -301,7 +313,7 @@ namespace Persistence.Migrations
 
                     b.HasIndex("UserId1");
 
-                    b.ToTable("MovieUserRates");
+                    b.ToTable("MovieReviews");
                 });
 
             modelBuilder.Entity("Domain.Entities.User", b =>
@@ -374,12 +386,12 @@ namespace Persistence.Migrations
                         new
                         {
                             Id = new Guid("a0440a78-41cc-419c-b05f-b511ee65d28a"),
-                            DateOfBirth = new DateTime(2000, 4, 10, 13, 6, 34, 461, DateTimeKind.Local).AddTicks(740),
+                            DateOfBirth = new DateTime(2000, 4, 13, 15, 2, 58, 370, DateTimeKind.Local).AddTicks(756),
                             Email = "d.krumkachev@gmail.com",
                             Gender = 1,
                             IsEmailVerified = true,
                             Name = "Robby Krieger",
-                            PasswordHash = "CE2793EAB65C92EAAA3E7CC0C9CE670CAE6475E6524BD0A0B17864D5A8469315FD877C0D9D206996E56E025236792F88",
+                            PasswordHash = "DA382DDED64A9ED8CDDC16BE2A6544D142B2CD73B601D7A087CB93397C92517948777C56B5CB29F461374392FCA97443",
                             Rating = 0m,
                             RatingCount = 0,
                             Role = 1,
@@ -389,12 +401,12 @@ namespace Persistence.Migrations
                         new
                         {
                             Id = new Guid("ddc7d332-e194-4e6e-a77d-c1ebce29e746"),
-                            DateOfBirth = new DateTime(2002, 4, 10, 13, 6, 34, 466, DateTimeKind.Local).AddTicks(4043),
+                            DateOfBirth = new DateTime(2002, 4, 13, 15, 2, 58, 375, DateTimeKind.Local).AddTicks(4524),
                             Email = "artemij1258@gmail.com",
                             Gender = 1,
                             IsEmailVerified = true,
                             Name = "John Densmore",
-                            PasswordHash = "01C4CDFAE39C72DB61DD80F1191E992D2EC39DF4732180E23ED3AFD753FA42CD9B15541EB00603827E84EE3D11B03279",
+                            PasswordHash = "BBF39B3E8CF669EDC8196DC18BB761230906C1D3EA0F602372180A87A5560CB0A603283F4D83F49871FEC95C9C3CBCC1",
                             Rating = 0m,
                             RatingCount = 0,
                             Role = 0,
@@ -459,7 +471,7 @@ namespace Persistence.Migrations
                     b.Navigation("Movie");
                 });
 
-            modelBuilder.Entity("Domain.Entities.MovieUserRate", b =>
+            modelBuilder.Entity("Domain.Entities.MovieReview", b =>
                 {
                     b.HasOne("Domain.Entities.Movie", null)
                         .WithMany()

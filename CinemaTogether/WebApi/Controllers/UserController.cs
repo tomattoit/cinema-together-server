@@ -10,7 +10,7 @@ namespace WebApi.Controllers;
 
 [ApiController]
 [Route ("api/users")]
-public class UserController(IUserService userService) : ControllerBase
+public class UserController(IUserService userService, IMovieService movieService) : ControllerBase
 {
     [ProducesResponseType(StatusCodes.Status201Created)]
     [ProducesResponseType(StatusCodes.Status400BadRequest)]
@@ -69,7 +69,7 @@ public class UserController(IUserService userService) : ControllerBase
     [ProducesErrorResponseType(typeof(ValidationProblemDetails))]
     [Authorize]
     [HttpPut("me")]
-    public async Task<IResult> PatchMeAsync(UpdateUserModel model, CancellationToken cancellationToken)
+    public async Task<IResult> EditMyProfileAsync(UpdateUserModel model, CancellationToken cancellationToken)
     {
         if (!Guid.TryParse(User.FindFirst(ClaimTypes.NameIdentifier)?.Value, out var userId))
         {
@@ -117,5 +117,31 @@ public class UserController(IUserService userService) : ControllerBase
             cancellationToken);
         
         return Results.Ok(users);
+    }
+
+    [HttpGet("{userId:guid}/reviews")]
+    [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(PaginatedResponse<MovieReviewDto>))]
+    [ProducesResponseType(StatusCodes.Status404NotFound)]
+    public async Task<IResult> GetUserReviews(Guid userId, int page, int pageSize, CancellationToken cancellationToken)
+    {
+        var reviews = await movieService.GetUserReviews(userId, page, pageSize, cancellationToken);
+        
+        return Results.Ok(reviews);
+    }
+    
+    [HttpGet("me/reviews")]
+    [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(PaginatedResponse<MovieReviewDto>))]
+    [ProducesResponseType(StatusCodes.Status404NotFound)]
+    [Authorize]
+    public async Task<IResult> GetMyReviews(int page, int pageSize, CancellationToken cancellationToken)
+    {
+        if (!Guid.TryParse(User.FindFirst(ClaimTypes.NameIdentifier)?.Value, out var userId))
+        {
+            return Results.Unauthorized();
+        }
+        
+        var reviews = await movieService.GetUserReviews(userId, page, pageSize, cancellationToken);
+        
+        return Results.Ok(reviews);
     }
 }

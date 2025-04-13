@@ -12,8 +12,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace Infrastructure.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20250402083842_AddMovies")]
-    partial class AddMovies
+    [Migration("20250413130258_Initial")]
+    partial class Initial
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -279,6 +279,46 @@ namespace Infrastructure.Migrations
                     b.ToTable("MovieGenres");
                 });
 
+            modelBuilder.Entity("Domain.Entities.MovieReview", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<string>("Comment")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<Guid>("MovieId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<Guid?>("MovieId1")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<decimal>("Rate")
+                        .HasColumnType("decimal(18,2)");
+
+                    b.Property<Guid>("UserId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<Guid?>("UserId1")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("Id")
+                        .IsUnique();
+
+                    b.HasIndex("MovieId");
+
+                    b.HasIndex("MovieId1");
+
+                    b.HasIndex("UserId");
+
+                    b.HasIndex("UserId1");
+
+                    b.ToTable("MovieReviews");
+                });
+
             modelBuilder.Entity("Domain.Entities.User", b =>
                 {
                     b.Property<Guid>("Id")
@@ -349,12 +389,12 @@ namespace Infrastructure.Migrations
                         new
                         {
                             Id = new Guid("a0440a78-41cc-419c-b05f-b511ee65d28a"),
-                            DateOfBirth = new DateTime(2000, 4, 2, 10, 38, 41, 804, DateTimeKind.Local).AddTicks(5985),
+                            DateOfBirth = new DateTime(2000, 4, 13, 15, 2, 58, 370, DateTimeKind.Local).AddTicks(756),
                             Email = "d.krumkachev@gmail.com",
                             Gender = 1,
                             IsEmailVerified = true,
                             Name = "Robby Krieger",
-                            PasswordHash = "0EAAFEA8A7EF68A46FA34890E777E0D14B17AD1DE643DD4E22C74B3B4CBA088A29C6822BE0555338D10217634A2A6B7C",
+                            PasswordHash = "DA382DDED64A9ED8CDDC16BE2A6544D142B2CD73B601D7A087CB93397C92517948777C56B5CB29F461374392FCA97443",
                             Rating = 0m,
                             RatingCount = 0,
                             Role = 1,
@@ -364,12 +404,12 @@ namespace Infrastructure.Migrations
                         new
                         {
                             Id = new Guid("ddc7d332-e194-4e6e-a77d-c1ebce29e746"),
-                            DateOfBirth = new DateTime(2002, 4, 2, 10, 38, 41, 811, DateTimeKind.Local).AddTicks(9036),
+                            DateOfBirth = new DateTime(2002, 4, 13, 15, 2, 58, 375, DateTimeKind.Local).AddTicks(4524),
                             Email = "artemij1258@gmail.com",
                             Gender = 1,
                             IsEmailVerified = true,
                             Name = "John Densmore",
-                            PasswordHash = "FB4146EC097E7219BA76AA0EC273BD9D7EA46426CAA44ACDE09DF7200427A1BA7048B272C8FA3599BB31A615F42A9F80",
+                            PasswordHash = "BBF39B3E8CF669EDC8196DC18BB761230906C1D3EA0F602372180A87A5560CB0A603283F4D83F49871FEC95C9C3CBCC1",
                             Rating = 0m,
                             RatingCount = 0,
                             Role = 0,
@@ -434,6 +474,33 @@ namespace Infrastructure.Migrations
                     b.Navigation("Movie");
                 });
 
+            modelBuilder.Entity("Domain.Entities.MovieReview", b =>
+                {
+                    b.HasOne("Domain.Entities.Movie", null)
+                        .WithMany()
+                        .HasForeignKey("MovieId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("Domain.Entities.Movie", "Movie")
+                        .WithMany()
+                        .HasForeignKey("MovieId1");
+
+                    b.HasOne("Domain.Entities.User", null)
+                        .WithMany()
+                        .HasForeignKey("UserId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("Domain.Entities.User", "User")
+                        .WithMany("MovieUserRates")
+                        .HasForeignKey("UserId1");
+
+                    b.Navigation("Movie");
+
+                    b.Navigation("User");
+                });
+
             modelBuilder.Entity("Domain.Entities.User", b =>
                 {
                     b.HasOne("Domain.Entities.City", "City")
@@ -487,6 +554,8 @@ namespace Infrastructure.Migrations
                     b.Navigation("FriendOf");
 
                     b.Navigation("Friends");
+
+                    b.Navigation("MovieUserRates");
                 });
 #pragma warning restore 612, 618
         }

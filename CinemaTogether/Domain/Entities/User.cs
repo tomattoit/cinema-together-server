@@ -41,5 +41,5 @@ public class User : IBaseEntity
     
     public List<Movie> RatedMovies { get; }
 
-    public List<MovieUserRate> MovieUserRates { get; }
+    public List<MovieReview> MovieUserRates { get; }
 }

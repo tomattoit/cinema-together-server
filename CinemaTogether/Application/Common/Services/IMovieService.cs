@@ -10,7 +10,9 @@ public interface IMovieService
     
     Task<PaginatedResponse<MovieListItem>> GetMovies(int page, int pageSize, CancellationToken cancellationToken);
     
-    Task RateMovie(Guid movieId, Guid userId, decimal rate, CancellationToken cancellationToken);
+    Task ReviewMovie(Guid movieId, Guid userId, decimal rate, string comment, CancellationToken cancellationToken);
     
-    Task<PaginatedResponse<UserRate>> GetUserRates(Guid userId, int page, int pageSize, CancellationToken cancellationToken);
+    Task<PaginatedResponse<MovieReviewDto>> GetUserReviews(Guid userId, int page, int pageSize, CancellationToken cancellationToken);
+    
+    Task<PaginatedResponse<MovieReviewDto>> GetMovieReviews(Guid movieId, int page, int pageSize, CancellationToken cancellationToken);
 }

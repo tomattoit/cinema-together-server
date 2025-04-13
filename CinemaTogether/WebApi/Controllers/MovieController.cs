@@ -36,17 +36,27 @@ public class MovieController(IMovieService movieService) : ControllerBase
         return Results.Ok(movies);
     }
 
-    [HttpPost("{id:guid}/rating")]
+    [HttpPost("{id:guid}/reviews")]
     [ProducesResponseType(StatusCodes.Status201Created)]
     [ProducesResponseType(StatusCodes.Status404NotFound)]
     [Authorize]
-    public async Task<IResult> RateMovie([FromQuery]Guid id, [FromQuery]decimal rate, CancellationToken cancellationToken)
+    public async Task<IResult> RateMovie(ReviewModel model, CancellationToken cancellationToken)
     {
         if (!Guid.TryParse(User.FindFirstValue(ClaimTypes.NameIdentifier), out var userId))
             return Results.Unauthorized();
         
-        await movieService.RateMovie(id, userId, rate, cancellationToken);
+        await movieService.ReviewMovie(model.MovieId, userId, model.Rating, model.Comment, cancellationToken);
         
         return Results.Created();
+    }
+
+    [HttpGet("{id:guid}/reviews")]
+    [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(PaginatedResponse<MovieReviewDto>))]
+    [ProducesResponseType(StatusCodes.Status404NotFound)]
+    public async Task<IResult> GetMovieReviews(Guid movieId, int page, int pageSize, CancellationToken cancellationToken)
+    {
+        var reviews = await movieService.GetMovieReviews(movieId, page, pageSize, cancellationToken);
+        
+        return Results.Ok(reviews);
     }
 }

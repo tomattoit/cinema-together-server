@@ -28,15 +28,18 @@ public class DatabaseSeeder(ApplicationDbContext context, IConfiguration config)
     public string GetApiContent(RestClient client, RestRequest request)
     {
         string json = string.Empty;
-        try
+        while (string.IsNullOrEmpty(json))
         {
-            json = client.Get(request).Content;
+            try
+            {
+                json = client.Get(request).Content;
+            }
+            catch (Exception e)
+            {
+                Task.Delay(250);
+            }
         }
-        catch (Exception e)
-        {
-            Thread.Sleep(250);
-            json = GetApiContent(client, request);
-        }
+
         return json;
     }
     

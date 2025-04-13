@@ -26,7 +26,7 @@ public class ApplicationDbContext(DbContextOptions<ApplicationDbContext> options
     
     public DbSet<Genre> Genres { get; set; }
     
-    public DbSet<MovieUserRate> MovieUserRates { get; set; }
+    public DbSet<MovieReview> MovieReviews { get; set; }
     
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
@@ -63,7 +63,7 @@ public class ApplicationDbContext(DbContextOptions<ApplicationDbContext> options
         modelBuilder.Entity<User>()
             .HasMany(e => e.RatedMovies)
             .WithMany(e => e.UsersRated)
-            .UsingEntity<MovieUserRate>(
+            .UsingEntity<MovieReview>(
                 m => m.HasOne<Movie>().WithMany().HasForeignKey(e => e.MovieId),
                 u => u.HasOne<User>().WithMany().HasForeignKey(e => e.UserId));
 
