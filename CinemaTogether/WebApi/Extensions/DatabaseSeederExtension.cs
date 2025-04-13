@@ -1,5 +1,4 @@
-﻿using Application.Data;
-using Infrastructure;
+﻿using Infrastructure;
 
 namespace WebApi.Extensions;
 

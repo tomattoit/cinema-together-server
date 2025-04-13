@@ -43,9 +43,9 @@ public class FriendController(IFriendService friendService) : ControllerBase
     [ProducesResponseType(StatusCodes.Status200OK)]
     [Produces(typeof(List<UserListItemDto>))]
     [HttpGet("{userId:guid}")]
-    public async Task<IResult> GetFriends(Guid userId)
+    public async Task<IResult> GetFriends(Guid userId, [FromQuery] int page = 1, [FromQuery] int pageSize = 10)
     {
-        var friends = await friendService.GetFriends(userId);
+        var friends = await friendService.GetFriends(userId, page, pageSize);
         
         return Results.Ok(friends);
     }
@@ -53,12 +53,12 @@ public class FriendController(IFriendService friendService) : ControllerBase
     [ProducesResponseType(StatusCodes.Status200OK)]
     [Produces(typeof(List<UserListItemDto>))]
     [HttpGet("me")]
-    public async Task<IResult> GetMyFriends()
+    public async Task<IResult> GetMyFriends([FromQuery] int page = 1, [FromQuery] int pageSize = 10)
     {
         if (!Guid.TryParse(User.FindFirstValue(ClaimTypes.NameIdentifier), out var userId))
             return Results.Unauthorized();
         
-        var friends = await friendService.GetFriends(userId);
+        var friends = await friendService.GetFriends(userId, page, pageSize);
         
         return Results.Ok(friends);
     }

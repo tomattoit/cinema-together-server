@@ -39,9 +39,9 @@ public class FriendService(IApplicationDbContext context) : IFriendService
         await context.SaveChangesAsync();
     }
 
-    public async Task<List<UserListItemDto>> GetFriends(Guid userId)
+    public async Task<PaginatedResponse<UserListItemDto>> GetFriends(Guid userId, int page, int pageSize)
     {
-        return await context.UserFriends
+        var friends =  await context.UserFriends
             .Where(uf => uf.UserId == userId)
             .Select(uf => new UserListItemDto(
                 uf.Friend.Id,
@@ -49,5 +49,9 @@ public class FriendService(IApplicationDbContext context) : IFriendService
                 uf.Friend.Name,
                 uf.Friend.Rating))
             .ToListAsync();
+        
+        var totalCount = friends.Count();
+
+        return new PaginatedResponse<UserListItemDto>(friends, page, pageSize, totalCount);
     }
 }

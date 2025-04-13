@@ -25,7 +25,7 @@ public class DatabaseSeeder(ApplicationDbContext context, IConfiguration config)
         }
     }
 
-    public string GetApiContent(RestClient client, RestRequest request)
+    private string GetApiContent(RestClient client, RestRequest request)
     {
         string json = string.Empty;
         while (string.IsNullOrEmpty(json))
@@ -34,7 +34,7 @@ public class DatabaseSeeder(ApplicationDbContext context, IConfiguration config)
             {
                 json = client.Get(request).Content;
             }
-            catch (Exception e)
+            catch (Exception)
             {
                 Task.Delay(250);
             }
@@ -81,7 +81,6 @@ public class DatabaseSeeder(ApplicationDbContext context, IConfiguration config)
             using (JsonDocument jsonDoc = JsonDocument.Parse(response!))
             {
                 var movieId = Guid.NewGuid();
-                var movieApiId = jsonDoc.RootElement.GetProperty("id").GetInt32();
                 movie = new Movie
                 {
                     Id = movieId,
@@ -104,7 +103,7 @@ public class DatabaseSeeder(ApplicationDbContext context, IConfiguration config)
                     {
                         MovieId = movieId,
                         Movie = movie,
-                        GenreId = genre.Id,
+                        GenreId = genre!.Id,
                         Genre = genre
                     };
 
@@ -205,6 +204,4 @@ public class DatabaseSeeder(ApplicationDbContext context, IConfiguration config)
         context.Cities.AddRange(cities);
         context.SaveChanges();
     }
-    
-    
 }

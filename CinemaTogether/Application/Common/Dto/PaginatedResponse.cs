@@ -1,4 +1,4 @@
-﻿namespace WebApi.Models;
+﻿namespace Application.Common.Dto;
 
 public class PaginatedResponse<T>
 {

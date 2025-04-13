@@ -9,7 +9,6 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Routing;
 using Microsoft.EntityFrameworkCore;
 using Shared.Cryptography;
-using WebApi.Models;
 
 namespace Infrastructure.Services;
 

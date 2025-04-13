@@ -1,5 +1,4 @@
 ﻿using Application.Common.Dto;
-using Domain.Entities;
 
 namespace Application.Common.Services;
 
@@ -9,5 +8,5 @@ public interface IFriendService
 
     Task RemoveFriend(Guid userId, Guid friendId);
 
-    Task<List<UserListItemDto>> GetFriends(Guid userId);
+    Task<PaginatedResponse<UserListItemDto>> GetFriends(Guid userId, int page, int pageSize);
 }

@@ -1,6 +1,4 @@
-﻿using Domain.Entities;
-
-namespace Application.Common.Dto;
+﻿namespace Application.Common.Dto;
 
 public record MovieDto(
     Guid Id,

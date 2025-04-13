@@ -14,6 +14,6 @@ public class RegisterModelValidator : AbstractValidator<RegisterModel>
 
         RuleFor(c => c.Password)
             .NotEmpty()
-            .MinimumLength(6).WithMessage(c => "Password must be at least 6 characters long");
+            .MinimumLength(6).WithMessage("Password must be at least 6 characters long");
     }
 }

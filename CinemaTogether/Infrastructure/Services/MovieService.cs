@@ -1,10 +1,8 @@
 ﻿using Application.Common.Dto;
 using Application.Common.Services;
 using Application.Data;
-using Domain.Entities;
 using Domain.Exceptions;
 using Microsoft.EntityFrameworkCore;
-using WebApi.Models;
 
 namespace Infrastructure.Services;
 
@@ -88,7 +86,7 @@ public class MovieService(IApplicationDbContext context) : IMovieService
         await context.SaveChangesAsync(cancellationToken);
     }
 
-    public async Task<PaginatedResponse<MovieReviewDto>> GetUserReviews(
+    public async Task<PaginatedResponse<MovieReviewDto>> GetMovieReviewsOfUser(
         Guid userId,
         int page,
         int pageSize,

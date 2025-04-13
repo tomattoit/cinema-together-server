@@ -1,6 +1,4 @@
-﻿using Domain.Enums;
-
-namespace Application.Common.Dto;
+﻿namespace Application.Common.Dto;
 
 public record UserPublicInfoDto(
     string Username,

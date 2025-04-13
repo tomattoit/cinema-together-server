@@ -1,6 +1,4 @@
 ﻿using Application.Common.Dto;
-using Domain.Entities;
-using WebApi.Models;
 
 namespace Application.Common.Services;
 
@@ -12,7 +10,7 @@ public interface IMovieService
     
     Task ReviewMovie(Guid movieId, Guid userId, decimal rate, string comment, CancellationToken cancellationToken);
     
-    Task<PaginatedResponse<MovieReviewDto>> GetUserReviews(Guid userId, int page, int pageSize, CancellationToken cancellationToken);
+    Task<PaginatedResponse<MovieReviewDto>> GetMovieReviewsOfUser(Guid userId, int page, int pageSize, CancellationToken cancellationToken);
     
     Task<PaginatedResponse<MovieReviewDto>> GetMovieReviews(Guid movieId, int page, int pageSize, CancellationToken cancellationToken);
 }
