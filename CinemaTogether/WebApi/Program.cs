@@ -6,6 +6,7 @@ using Infrastructure;
 using Microsoft.OpenApi.Models;
 using WebApi.Extensions;
 using WebApi.Middlewares;
+using Infrastructure.Hubs;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -34,7 +35,7 @@ builder.Services.AddSwaggerGen(c =>
     var xmlFile = $"{Assembly.GetExecutingAssembly().GetName().Name}.xml";
     var xmlPath = Path.Combine(AppContext.BaseDirectory, xmlFile);
     c.IncludeXmlComments(xmlPath);
-    
+
     c.SwaggerDoc("v1", new OpenApiInfo { Title = "CinemaTogether", Version = "v1" });
 });
 
@@ -52,14 +53,14 @@ builder.Services.AddControllers();
 
 var app = builder.Build();
 
-//app.Urls.Add("https://[::]:5001");
-
 if (app.Environment.IsDevelopment())
 {
     app.UseSwagger();
     app.UseSwaggerUI(c =>
         c.SwaggerEndpoint("/swagger/v1/swagger.json", "CinemaTogether v1"));
 }
+
+app.MapHub<ChatHub>("/hubs/chat");
 
 app.UseExceptionHandler();
 

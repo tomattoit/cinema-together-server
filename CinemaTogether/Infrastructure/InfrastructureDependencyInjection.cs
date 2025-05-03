@@ -1,5 +1,6 @@
 ﻿using System.Text;
 using Application.Common.Auth;
+using Application.Common.Interfaces;
 using Application.Common.Services;
 using Application.Data;
 using Domain.Constants;
@@ -31,7 +32,7 @@ public static class InfrastructureDependencyInjection
         var connectionString = configuration.GetConnectionString(ConfigSectionNames.DefaultConnectionString);
         services.AddDbContext<ApplicationDbContext>(options =>
             options.UseSqlServer(connectionString));
-        
+
         services.AddScoped<IApplicationDbContext>(sp => sp.GetRequiredService<ApplicationDbContext>());
 
         return services;
@@ -66,7 +67,7 @@ public static class InfrastructureDependencyInjection
                     }
                 };
             });
-        
+
         services.AddSingleton<ITokenProvider, TokenProvider>();
 
         return services;
@@ -80,8 +81,10 @@ public static class InfrastructureDependencyInjection
             .AddScoped<ICountryService, CountryService>()
             .AddScoped<IFriendService, FriendService>()
             .AddScoped<IEmailSender, EmailSender>()
-            .AddScoped<IMovieService, MovieService>();
-        
+            .AddScoped<IMovieService, MovieService>()
+            .AddScoped<IGroupService, GroupService>()
+            .AddScoped<IChatService, ChatService>();
+
         return services;
     }
 }
