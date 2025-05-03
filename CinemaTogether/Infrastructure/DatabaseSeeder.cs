@@ -51,7 +51,7 @@ public class DatabaseSeeder(ApplicationDbContext context, IConfiguration config)
         {
             var options =
                 new RestClientOptions(
-                    $"https://api.themoviedb.org/3/discover/movie?include_adult=false&include_video=false&language=en-US&page={page}&sort_by=title.asc&vote_count.gte=309");
+                    $"https://api.themoviedb.org/3/movie/top_rated?language=ru-RU&page={page}");
             var client = new RestClient(options);
             var request = new RestRequest("");
             request.AddHeader("accept", "application/json");
@@ -69,7 +69,7 @@ public class DatabaseSeeder(ApplicationDbContext context, IConfiguration config)
 
         foreach (var id in ids)
         {
-            var options = new RestClientOptions($"https://api.themoviedb.org/3/movie/{id}?language=en-US");
+            var options = new RestClientOptions($"https://api.themoviedb.org/3/movie/{id}?language=ru-RU");
             var client = new RestClient(options);
             var request = new RestRequest("");
             request.AddHeader("accept", "application/json");
@@ -111,7 +111,7 @@ public class DatabaseSeeder(ApplicationDbContext context, IConfiguration config)
                 }
             }
 
-            options = new RestClientOptions($"https://api.themoviedb.org/3/movie/{id}/credits?language=en-US");
+            options = new RestClientOptions($"https://api.themoviedb.org/3/movie/{id}/credits?language=ru-RU");
             client = new RestClient(options);
             request = new RestRequest("");
             request.AddHeader("accept", "application/json");

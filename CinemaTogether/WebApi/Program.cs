@@ -19,17 +19,6 @@ builder.Services.AddHttpsRedirection(options =>
     options.HttpsPort = 5001;
 });
 
-builder.Services.AddCors(options =>
-{
-    options.AddPolicy(
-        "AllowAllOrigins",
-        policyBuilder => policyBuilder
-            .AllowAnyHeader()
-            .AllowAnyMethod()
-            .AllowAnyOrigin()
-    );
-});
-
 builder.Services.AddSwaggerGen(c =>
 {
     var xmlFile = $"{Assembly.GetExecutingAssembly().GetName().Name}.xml";
@@ -64,7 +53,11 @@ app.MapHub<ChatHub>("/hubs/chat");
 
 app.UseExceptionHandler();
 
-app.UseCors("AllowAllOrigins");
+app.UseCors(builder => builder
+    .WithOrigins("https://localhost:4200")
+    .AllowAnyMethod()
+    .AllowAnyHeader()
+    .AllowCredentials());
 
 app.MapControllers();
 
