@@ -106,6 +106,7 @@ public class UserService(
             .Where(u => u.Id == userId)
             .Include(u => u.City)
             .Select(u => new UserPublicInfoDto(
+                u.Id,
                 u.Username,
                 u.Name,
                 u.DateOfBirth,
@@ -205,5 +206,13 @@ public class UserService(
         var paginatedResponse = new PaginatedResponse<UserListItemDto>(users, totalCount, page, pageSize);
         
         return paginatedResponse;
+    }
+
+    public async Task<User> GetUserByIdAsync(Guid userId, CancellationToken cancellationToken = default)
+    {
+        var user = await context.Users.AsNoTracking().FirstOrDefaultAsync(u => u.Id == userId, cancellationToken);
+        if (user == null)
+            throw new NotFoundException("User", "Id", userId.ToString());
+        return user;
     }
 }

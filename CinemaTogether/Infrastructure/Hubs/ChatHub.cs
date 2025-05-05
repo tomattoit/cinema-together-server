@@ -1,7 +1,7 @@
-using System.Threading.Tasks;
+using Application.Common.Dto;
 using Microsoft.AspNetCore.SignalR;
 using Application.Common.Interfaces;
-using Domain.Entities;
+using Application.Common.Services;
 
 namespace Infrastructure.Hubs;
 
@@ -69,7 +69,7 @@ public class ChatHub : Hub
             {
                 sender.Id,
                 sender.Username,
-                sender.ImagePath
+                sender.ProfilePicturePath
             }
         };
 
@@ -121,15 +121,15 @@ public class ChatHub : Hub
         }
     }
 
-    public async Task NotifyTyping(string chatId)
+    public async Task NotifyTyping(string chatId, CancellationToken cancellationToken)
     {
         var userId = Context.User?.FindFirst("sub")?.Value;
         if (!string.IsNullOrEmpty(userId))
         {
-            var user = await _userService.GetUserByIdAsync(Guid.Parse(userId));
+            var user = await _userService.GetUserPublicInfoByIdAsync(Guid.Parse(userId), cancellationToken);
             await Clients.GroupExcept(chatId, Context.ConnectionId).SendAsync("UserTyping", new
             {
-                user.Id,
+                user.UserId,
                 user.Username
             });
         }
