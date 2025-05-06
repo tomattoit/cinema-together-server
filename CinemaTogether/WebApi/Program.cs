@@ -40,13 +40,15 @@ builder.Services
 
 builder.Services.AddControllers();
 
+builder.Services.AddSignalR();
+
 var app = builder.Build();
 
 if (app.Environment.IsDevelopment())
 {
     app.UseSwagger();
     app.UseSwaggerUI(c =>
-        c.SwaggerEndpoint("/swagger/v1/swagger.json", "CinemaTogether v1"));
+    c.SwaggerEndpoint("/swagger/v1/swagger.json", "CinemaTogether v1"));
 }
 
 app.MapHub<ChatHub>("/hubs/chat");
