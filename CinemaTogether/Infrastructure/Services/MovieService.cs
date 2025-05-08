@@ -105,7 +105,8 @@ public class MovieService(IApplicationDbContext context) : IMovieService
                         m.Movie.PosterPath,
                         m.Movie.RatingTmdb),
                     m.Rate,
-                    m.Comment))
+                    m.Comment,
+                    m.UserId))
             .ToListAsync(cancellationToken);
         
         if (reviews == null)
@@ -129,7 +130,8 @@ public class MovieService(IApplicationDbContext context) : IMovieService
                         m.Movie.PosterPath,
                         m.Movie.RatingTmdb),
                     m.Rate,
-                    m.Comment))
+                    m.Comment,
+                    m.UserId))
             .ToListAsync(cancellationToken);
         
         if (reviews == null)
