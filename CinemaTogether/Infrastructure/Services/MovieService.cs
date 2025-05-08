@@ -16,6 +16,7 @@ public class MovieService(IApplicationDbContext context) : IMovieService
             .Include(m => m.MovieGenres)
             .Select(m => new MovieDto(
                 m.Id,
+                m.TmdbId,
                 m.Title,
                 m.Duration,
                 m.MovieGenres.Select(g => g.Genre.Name).ToList(),
@@ -47,6 +48,7 @@ public class MovieService(IApplicationDbContext context) : IMovieService
         
         var movies = await query
             .AsNoTracking()
+            .OrderByDescending(m => m.RatingTmdb)
             .Skip((page - 1) * pageSize)
             .Take(pageSize)
             .Select(m => new MovieListItem(m.Id, m.Title, m.ReleaseDate, m.PosterPath, m.RatingTmdb))

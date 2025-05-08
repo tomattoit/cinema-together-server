@@ -2,6 +2,7 @@
 
 public record MovieDto(
     Guid Id,
+    int TmdbId,
     string Title,
     int Duration,
     List<string> Genres,

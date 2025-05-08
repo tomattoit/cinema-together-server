@@ -5,6 +5,7 @@ namespace Domain.Entities;
 public class Movie : IBaseEntity
 {
     public Guid Id { get; set; }
+    public int TmdbId { get; set; }
     
     public string Title { get; set; }
     

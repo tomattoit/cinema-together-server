@@ -51,7 +51,7 @@ public class DatabaseSeeder(ApplicationDbContext context, IConfiguration config)
         {
             var options =
                 new RestClientOptions(
-                    $"https://api.themoviedb.org/3/movie/top_rated?language=ru-RU&page={page}");
+                    $"https://api.themoviedb.org/3/movie/top_rated?language=en-US&page={page}");
             var client = new RestClient(options);
             var request = new RestRequest("");
             request.AddHeader("accept", "application/json");
@@ -69,7 +69,7 @@ public class DatabaseSeeder(ApplicationDbContext context, IConfiguration config)
 
         foreach (var id in ids)
         {
-            var options = new RestClientOptions($"https://api.themoviedb.org/3/movie/{id}?language=ru-RU");
+            var options = new RestClientOptions($"https://api.themoviedb.org/3/movie/{id}?language=en-US");
             var client = new RestClient(options);
             var request = new RestRequest("");
             request.AddHeader("accept", "application/json");
@@ -84,6 +84,7 @@ public class DatabaseSeeder(ApplicationDbContext context, IConfiguration config)
                 movie = new Movie
                 {
                     Id = movieId,
+                    TmdbId = jsonDoc.RootElement.GetProperty("id").GetInt32(),
                     Title = jsonDoc.RootElement.GetProperty("title").GetString(),
                     Duration = jsonDoc.RootElement.GetProperty("runtime").GetInt32(),
                     Description = jsonDoc.RootElement.GetProperty("overview").GetString(),
@@ -111,7 +112,7 @@ public class DatabaseSeeder(ApplicationDbContext context, IConfiguration config)
                 }
             }
 
-            options = new RestClientOptions($"https://api.themoviedb.org/3/movie/{id}/credits?language=ru-RU");
+            options = new RestClientOptions($"https://api.themoviedb.org/3/movie/{id}/credits?language=en-US");
             client = new RestClient(options);
             request = new RestRequest("");
             request.AddHeader("accept", "application/json");
@@ -125,12 +126,17 @@ public class DatabaseSeeder(ApplicationDbContext context, IConfiguration config)
 
                 foreach (var actorJson in jsonDoc.RootElement.GetProperty("cast").EnumerateArray())
                 {
-                    if (actorJson.GetProperty("known_for_department").GetString() == "Actor")
-                        actors.Add(actorJson.GetProperty("name").GetString());
-                    
-                    if (actorJson.GetProperty("known_for_department").GetString() == "Directing")
-                        directors.Add(actorJson.GetProperty("name").GetString());
+                    actors.Add(actorJson.GetProperty("name").GetString());
                 }
+                
+                foreach (var actorJson in jsonDoc.RootElement.GetProperty("crew").EnumerateArray())
+                {
+                    if (actorJson.TryGetProperty("job", out var job) && job.GetString() == "Director")
+                    {
+                        directors.Add(actorJson.GetProperty("name").GetString());
+                    }
+                }
+                
                 movie.Actors = String.Join(", ", actors);
                 movie.Director = String.Join(", ", directors);
             }
