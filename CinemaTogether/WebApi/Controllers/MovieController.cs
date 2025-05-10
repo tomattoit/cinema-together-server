@@ -8,7 +8,7 @@ using WebApi.Models;
 namespace WebApi.Controllers;
 
 [ApiController]
-[Route ("api/movies")]
+[Route("api/movies")]
 public class MovieController(IMovieService movieService) : ControllerBase
 {
     [HttpGet("{id:guid}")]
@@ -17,7 +17,7 @@ public class MovieController(IMovieService movieService) : ControllerBase
     public async Task<IResult> GetMovieAsync(Guid id, CancellationToken cancellationToken)
     {
         var movie = await movieService.GetMovieById(id, cancellationToken);
-        
+
         return Results.Ok(movie);
     }
 
@@ -32,7 +32,26 @@ public class MovieController(IMovieService movieService) : ControllerBase
             page,
             pageSize,
             cancellationToken);
-        
+
+        return Results.Ok(movies);
+    }
+
+    [HttpGet("search")]
+    [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(PaginatedResponse<MovieListItem>))]
+    [ProducesResponseType(StatusCodes.Status404NotFound)]
+    public async Task<IResult> SearchMoviesAsync(
+        [FromQuery] MovieSearchModel searchModel,
+        CancellationToken cancellationToken)
+    {
+        var movies = await movieService.SearchMovies(
+            searchModel.Title,
+            searchModel.GenreIds,
+            searchModel.ReleaseDateFrom,
+            searchModel.ReleaseDateTo,
+            searchModel.Page,
+            searchModel.PageSize,
+            cancellationToken);
+
         return Results.Ok(movies);
     }
 
@@ -44,9 +63,9 @@ public class MovieController(IMovieService movieService) : ControllerBase
     {
         if (!Guid.TryParse(User.FindFirstValue(ClaimTypes.NameIdentifier), out var userId))
             return Results.Unauthorized();
-        
+
         await movieService.ReviewMovie(model.MovieId, userId, model.Rating, model.Comment, cancellationToken);
-        
+
         return Results.Created();
     }
 
@@ -56,7 +75,16 @@ public class MovieController(IMovieService movieService) : ControllerBase
     public async Task<IResult> GetMovieReviews(Guid movieId, int page, int pageSize, CancellationToken cancellationToken)
     {
         var reviews = await movieService.GetMovieReviews(movieId, page, pageSize, cancellationToken);
-        
+
         return Results.Ok(reviews);
+    }
+
+    [HttpGet("genres")]
+    [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(List<GenreDto>))]
+    public async Task<IResult> GetGenresAsync(CancellationToken cancellationToken)
+    {
+        var genres = await movieService.GetGenres(cancellationToken);
+
+        return Results.Ok(genres);
     }
 }
