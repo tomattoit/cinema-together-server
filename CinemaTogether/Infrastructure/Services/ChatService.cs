@@ -1,4 +1,4 @@
-using Application.Common.Interfaces;
+using Application.Common.Services;
 using Application.Data;
 using Domain.Entities;
 using Microsoft.EntityFrameworkCore;

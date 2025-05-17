@@ -34,6 +34,8 @@ public interface IApplicationDbContext
     DbSet<PollOption> PollOptions { get; set; }
 
     DbSet<Vote> Votes { get; set; }
-
+    
+    DbSet<UserGenre> UserGenres { get; set; }
+    
     Task<int> SaveChangesAsync(CancellationToken cancellationToken = default);
 }

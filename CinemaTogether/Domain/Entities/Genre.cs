@@ -11,4 +11,6 @@ public class Genre : IBaseEntity
     public string Name { get; set; }
 
     public ICollection<MovieGenre> MovieGenres { get; set; } = new List<MovieGenre>();
+    
+    public ICollection<UserGenre> UserGenres { get; set; } = new List<UserGenre>();
 }

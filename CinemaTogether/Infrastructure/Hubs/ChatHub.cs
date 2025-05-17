@@ -1,6 +1,4 @@
-using Application.Common.Dto;
 using Microsoft.AspNetCore.SignalR;
-using Application.Common.Interfaces;
 using Application.Common.Services;
 
 namespace Infrastructure.Hubs;

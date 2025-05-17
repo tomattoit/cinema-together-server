@@ -29,5 +29,5 @@ public class Movie : IBaseEntity
     
     public decimal RatingTmdb { get; set; }
     
-    public List<User> UsersRated { get; set; }
+    public List<MovieReview> MovieReviews { get; set; } = new List<MovieReview>();
 }

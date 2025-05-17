@@ -12,8 +12,7 @@ namespace Domain.Entities
         public string Type { get; set; }
         public Guid OwnerId { get; set; }
         public string ChatId { get; set; }
-
-        // Навигационные свойства
+        
         public User Owner { get; set; }
         public Chat Chat { get; set; }
         public ICollection<User> Members { get; set; }

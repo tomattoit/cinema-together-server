@@ -35,11 +35,13 @@ public class User : IBaseEntity
     
     public Role Role { get; set; }
     
-    public List<UserFriend> Friends { get; }
+    public List<UserFriend> Friends { get; set; }
     
-    public List<UserFriend> FriendOf { get; }
+    public List<UserFriend> FriendOf { get; set; }
     
-    public List<Movie> RatedMovies { get; }
+    public List<Movie> RatedMovies { get; set; }
 
-    public List<MovieReview> MovieUserRates { get; }
+    public List<MovieReview> MovieUserRates { get; set; }
+    
+    public ICollection<UserGenre> UserGenres { get; set; } = new List<UserGenre>();
 }

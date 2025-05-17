@@ -144,4 +144,36 @@ public class UserController(IUserService userService, IMovieService movieService
         
         return Results.Ok(reviews);
     }
+
+    [HttpPut("me/favourite/genres")]
+    [ProducesResponseType(StatusCodes.Status204NoContent)]
+    [ProducesResponseType(StatusCodes.Status401Unauthorized)]
+    [Authorize]
+    public async Task<IResult> SetMyFavouriteGenre([FromBody] List<Guid> genresIds, CancellationToken cancellationToken)
+    {
+        if (!Guid.TryParse(User.FindFirst(ClaimTypes.NameIdentifier)?.Value, out var userId))
+        {
+            return Results.Unauthorized();
+        }
+        
+        await userService.SetUserFavouriteGenresAsync(userId, genresIds, cancellationToken);
+        
+        return Results.NoContent();
+    }
+
+    [HttpGet("me/favourite/genres")]
+    [ProducesResponseType(StatusCodes.Status200OK)]
+    [ProducesResponseType(StatusCodes.Status401Unauthorized)]
+    [Authorize]
+    public async Task<IResult> GetMyFavouriteGenres(CancellationToken cancellationToken)
+    {
+        if (!Guid.TryParse(User.FindFirst(ClaimTypes.NameIdentifier)?.Value, out var userId))
+        {
+            return Results.Unauthorized();
+        }
+        
+        var genres = await userService.GetUserFavouriteGenresAsync(userId, cancellationToken);
+        
+        return Results.Ok(genres);
+    }
 }

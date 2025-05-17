@@ -14,15 +14,10 @@ namespace Domain.Entities
         public DateTime CreatedAt { get; set; }
         public DateTime EndDateTime { get; set; }
         public string Description { get; set; }
-
-        // Навигационные свойства
+        
         public Group Group { get; set; }
         public User Creator { get; set; }
-        public ICollection<PollOption> Options { get; set; }
-
-        public Poll()
-        {
-            Options = new List<PollOption>();
-        }
+        public Event Event { get; set; }
+        public ICollection<PollOption> Options { get; set; } = new List<PollOption>();
     }
 }

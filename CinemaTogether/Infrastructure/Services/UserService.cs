@@ -1,4 +1,5 @@
-﻿using Application.Common.Dto;
+﻿using System.Runtime.Loader;
+using Application.Common.Dto;
 using Application.Common.Services;
 using Application.Data;
 using Domain.Constants;
@@ -214,5 +215,44 @@ public class UserService(
         if (user == null)
             throw new NotFoundException("User", "Id", userId.ToString());
         return user;
+    }
+
+    public async Task SetUserFavouriteGenresAsync(Guid userId, List<Guid> genresIds, CancellationToken cancellationToken)
+    {
+        var genres = await context.Genres
+            .Where(g => genresIds.Contains(g.Id))
+            .ToListAsync(cancellationToken);
+        
+        var user = await context.Users.FirstOrDefaultAsync(u => u.Id == userId, cancellationToken);
+        
+        var userGenres = await context.UserGenres.Where(ug => ug.UserId == userId).ToListAsync(cancellationToken);
+        context.UserGenres.RemoveRange(userGenres);
+
+        foreach (var genre in genres)
+        {
+            await context.UserGenres.AddAsync(new UserGenre
+            {
+                GenreId = genre.Id,
+                UserId = user.Id,
+                Genre = genre,
+                User = user
+            }, cancellationToken);
+        }
+        
+        await context.SaveChangesAsync(cancellationToken);
+    }
+
+    public async Task<List<GenreDto>> GetUserFavouriteGenresAsync(Guid userId, CancellationToken cancellationToken)
+    {
+        var user = await context.Users
+            .AsNoTracking()
+            .Include(u => u.UserGenres)
+            .ThenInclude(ug => ug.Genre)
+            .FirstOrDefaultAsync(u => u.Id == userId, cancellationToken);
+        
+        if (user == null)
+            throw new NotFoundException("User", "Id", userId.ToString());
+        
+        return user.UserGenres.Select(u => new GenreDto(u.GenreId, u.Genre.Name)).ToList();
     }
 }
