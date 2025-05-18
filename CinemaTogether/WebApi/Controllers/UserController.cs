@@ -122,9 +122,9 @@ public class UserController(IUserService userService, IMovieService movieService
     [HttpGet("{userId:guid}/reviews")]
     [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(PaginatedResponse<MovieReviewDto>))]
     [ProducesResponseType(StatusCodes.Status404NotFound)]
-    public async Task<IResult> GetUserReviews(Guid userId, int page, int pageSize, CancellationToken cancellationToken)
+    public async Task<IResult> GetUserReviews(Guid userId, CancellationToken cancellationToken, [FromQuery]int page = 1, [FromQuery]int pageSize = 10)
     {
-        var reviews = await movieService.GetMovieReviewsOfUser(userId, cancellationToken);
+        var reviews = await movieService.GetMovieReviewsOfUser(userId, page, pageSize, cancellationToken);
         
         return Results.Ok(reviews);
     }
@@ -133,14 +133,14 @@ public class UserController(IUserService userService, IMovieService movieService
     [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(PaginatedResponse<MovieReviewDto>))]
     [ProducesResponseType(StatusCodes.Status404NotFound)]
     [Authorize]
-    public async Task<IResult> GetMyReviews(int page, int pageSize, CancellationToken cancellationToken)
+    public async Task<IResult> GetMyReviews(CancellationToken cancellationToken, [FromQuery]int page = 1, [FromQuery]int pageSize = 10)
     {
         if (!Guid.TryParse(User.FindFirst(ClaimTypes.NameIdentifier)?.Value, out var userId))
         {
             return Results.Unauthorized();
         }
         
-        var reviews = await movieService.GetMovieReviewsOfUser(userId, cancellationToken);
+        var reviews = await movieService.GetMovieReviewsOfUser(userId, page, pageSize, cancellationToken);
         
         return Results.Ok(reviews);
     }
