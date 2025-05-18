@@ -12,6 +12,7 @@ public class CountryService(IApplicationDbContext context) : ICountryService
         var countries = await context.Countries
             .AsNoTracking()
             .Select(c => new CountryDto(c.Id, c.Name))
+            .OrderBy(c => c.Name)
             .ToListAsync();
         
         return countries;
@@ -22,6 +23,7 @@ public class CountryService(IApplicationDbContext context) : ICountryService
         var cities = await context.Cities
             .AsNoTracking()
             .Where(c => c.CountryId == countryId)
+            .OrderBy(c => c.Name)
             .Select(c => new CityDto(c.Id, c.Name))
             .ToListAsync();
         
