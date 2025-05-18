@@ -199,6 +199,7 @@ public class UserService(
         var totalCount = await query.CountAsync(cancellationToken);
         
         var users = await query
+            .OrderBy(u => u.Name)
             .Skip((page - 1) * pageSize)
             .Take(pageSize)
             .Select(u => new UserListItemDto(u.Id, u.Username, u.Name, u.Rating))
