@@ -140,10 +140,8 @@ public class MovieService(IApplicationDbContext context) : IMovieService
         await context.SaveChangesAsync(cancellationToken);
     }
 
-    public async Task<PaginatedResponse<MovieReviewDto>> GetMovieReviewsOfUser(
+    public async Task<List<MovieReviewDto>> GetMovieReviewsOfUser(
         Guid userId,
-        int page,
-        int pageSize,
         CancellationToken cancellationToken)
     {
         var reviews = await context.MovieReviews
@@ -168,7 +166,7 @@ public class MovieService(IApplicationDbContext context) : IMovieService
         if (reviews == null)
             throw new NotFoundException("Reviews", "User Id", userId.ToString());
 
-        return new PaginatedResponse<MovieReviewDto>(reviews, reviews.Count, page, pageSize);
+        return reviews;
     }
 
     public async Task<PaginatedResponse<MovieReviewDto>> GetMovieReviews(Guid movieId, int page, int pageSize, CancellationToken cancellationToken)

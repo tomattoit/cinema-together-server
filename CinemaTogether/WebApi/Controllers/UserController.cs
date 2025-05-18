@@ -124,7 +124,7 @@ public class UserController(IUserService userService, IMovieService movieService
     [ProducesResponseType(StatusCodes.Status404NotFound)]
     public async Task<IResult> GetUserReviews(Guid userId, int page, int pageSize, CancellationToken cancellationToken)
     {
-        var reviews = await movieService.GetMovieReviewsOfUser(userId, page, pageSize, cancellationToken);
+        var reviews = await movieService.GetMovieReviewsOfUser(userId, cancellationToken);
         
         return Results.Ok(reviews);
     }
@@ -140,7 +140,7 @@ public class UserController(IUserService userService, IMovieService movieService
             return Results.Unauthorized();
         }
         
-        var reviews = await movieService.GetMovieReviewsOfUser(userId, page, pageSize, cancellationToken);
+        var reviews = await movieService.GetMovieReviewsOfUser(userId, cancellationToken);
         
         return Results.Ok(reviews);
     }
