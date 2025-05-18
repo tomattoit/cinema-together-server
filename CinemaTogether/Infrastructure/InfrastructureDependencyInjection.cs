@@ -82,7 +82,8 @@ public static class InfrastructureDependencyInjection
             .AddScoped<IEmailSender, EmailSender>()
             .AddScoped<IMovieService, MovieService>()
             .AddScoped<IGroupService, GroupService>()
-            .AddScoped<IChatService, ChatService>();
+            .AddScoped<IChatService, ChatService>()
+            .AddScoped<IAdminService, AdminService>();
 
         return services;
     }
