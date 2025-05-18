@@ -39,13 +39,31 @@ public class FriendController(IFriendService friendService) : ControllerBase
 
         return Results.Ok();
     }
-
+    
     [ProducesResponseType(StatusCodes.Status200OK)]
     [Produces(typeof(List<UserListItemDto>))]
-    [HttpGet("{userId:guid}")]
-    public async Task<IResult> GetFriends(Guid userId, [FromQuery] int page = 1, [FromQuery] int pageSize = 10)
+    [HttpGet("me/requests/sent")]
+    [Authorize]
+    public async Task<IResult> GetMySentRequests([FromQuery] int page = 1, [FromQuery] int pageSize = 10)
     {
-        var friends = await friendService.GetFriends(userId, page, pageSize);
+        if (!Guid.TryParse(User.FindFirstValue(ClaimTypes.NameIdentifier), out var userId))
+            return Results.Unauthorized();
+        
+        var friends = await friendService.GetSentFriendRequests(userId, page, pageSize);
+        
+        return Results.Ok(friends);
+    }
+    
+    [ProducesResponseType(StatusCodes.Status200OK)]
+    [Produces(typeof(List<UserListItemDto>))]
+    [HttpGet("me/requests/received")]
+    [Authorize]
+    public async Task<IResult> GetMyReceivedRequests([FromQuery] int page = 1, [FromQuery] int pageSize = 10)
+    {
+        if (!Guid.TryParse(User.FindFirstValue(ClaimTypes.NameIdentifier), out var userId))
+            return Results.Unauthorized();
+        
+        var friends = await friendService.GetReceivedFriendRequests(userId, page, pageSize);
         
         return Results.Ok(friends);
     }
@@ -53,11 +71,23 @@ public class FriendController(IFriendService friendService) : ControllerBase
     [ProducesResponseType(StatusCodes.Status200OK)]
     [Produces(typeof(List<UserListItemDto>))]
     [HttpGet("me")]
+    [Authorize]
     public async Task<IResult> GetMyFriends([FromQuery] int page = 1, [FromQuery] int pageSize = 10)
     {
         if (!Guid.TryParse(User.FindFirstValue(ClaimTypes.NameIdentifier), out var userId))
             return Results.Unauthorized();
         
+        var friends = await friendService.GetFriends(userId, page, pageSize);
+        
+        return Results.Ok(friends);
+    }
+    
+    [ProducesResponseType(StatusCodes.Status200OK)]
+    [Produces(typeof(List<UserListItemDto>))]
+    [HttpGet("{userId:guid}")]
+    [Authorize]
+    public async Task<IResult> GetUserFriends(Guid userId, [FromQuery] int page = 1, [FromQuery] int pageSize = 10)
+    {
         var friends = await friendService.GetFriends(userId, page, pageSize);
         
         return Results.Ok(friends);

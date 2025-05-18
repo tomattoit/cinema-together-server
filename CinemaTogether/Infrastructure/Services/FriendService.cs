@@ -39,15 +39,54 @@ public class FriendService(IApplicationDbContext context) : IFriendService
         await context.SaveChangesAsync();
     }
 
-    public async Task<PaginatedResponse<UserListItemDto>> GetFriends(Guid userId, int page, int pageSize)
+    public async Task<PaginatedResponse<UserListItemDto>> GetSentFriendRequests(Guid userId, int page, int pageSize)
     {
-        var friends =  await context.UserFriends
+        var requests =  await context.UserFriends
             .Where(uf => uf.UserId == userId)
             .Select(uf => new UserListItemDto(
                 uf.Friend.Id,
                 uf.Friend.Username,
                 uf.Friend.Name,
                 uf.Friend.Rating))
+            .ToListAsync();
+        
+        var totalCount = requests.Count();
+
+        return new PaginatedResponse<UserListItemDto>(requests, page, pageSize, totalCount);
+    }
+    
+    public async Task<PaginatedResponse<UserListItemDto>> GetReceivedFriendRequests(Guid userId, int page, int pageSize)
+    {
+        var requests = await context.UserFriends
+            .Where(uf => uf.FriendId == userId)
+            .Select(uf => new UserListItemDto(
+                uf.User.Id,
+                uf.User.Username,
+                uf.User.Name,
+                uf.User.Rating))
+            .ToListAsync();
+        
+        var totalCount = requests.Count();
+
+        return new PaginatedResponse<UserListItemDto>(requests, page, pageSize, totalCount);
+    }
+
+    public async Task<PaginatedResponse<UserListItemDto>> GetFriends(Guid userId, int page, int pageSize)
+    {
+        var friends = await context.UserFriends
+            .Where(uf => uf.UserId == userId)
+            .Join(
+                context.UserFriends,
+                a => new { UserId = a.FriendId, FriendId = a.UserId },
+                b => new { b.UserId, b.FriendId },
+                (a, b) => a.Friend
+            )
+            .Distinct()
+            .Select(u => new UserListItemDto(
+                u.Id,
+                u.Username,
+                u.Name,
+                u.Rating))
             .ToListAsync();
         
         var totalCount = friends.Count();
