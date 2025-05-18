@@ -211,4 +211,35 @@ public class MovieService(IApplicationDbContext context) : IMovieService
 
         return genres;
     }
+
+    public async Task UpdateMovieReviewOfUser(
+        UpdateReviewDto updateReviewDto,
+        Guid userId,
+        CancellationToken cancellationToken)
+    {
+        if (updateReviewDto.Rate < 0 || updateReviewDto.Rate > 10) throw new RateOutOfRangeException();
+        
+        var review = await context.MovieReviews.FirstOrDefaultAsync(m => m.Id == updateReviewDto.Id, cancellationToken);
+        
+        if (review == null) throw new NotFoundException("Review", "Id", updateReviewDto.Id.ToString());
+        
+        if (review.UserId != userId) throw new UnauthorizedAccessException();
+        
+        review.Comment = updateReviewDto.Comment;
+        review.Rate = updateReviewDto.Rate;
+        
+        await context.SaveChangesAsync(cancellationToken);
+    }
+
+    public async Task DeleteMovieReviewOfUser(Guid userId, Guid reviewId, CancellationToken cancellationToken)
+    {
+        var review = await context.MovieReviews.FirstOrDefaultAsync(m => m.Id == reviewId, cancellationToken);
+        
+        if (review == null) throw new NotFoundException("Review", "Id", reviewId.ToString());
+        
+        if (review.UserId != userId) throw new UnauthorizedAccessException(); 
+        
+        context.MovieReviews.Remove(review);
+        await context.SaveChangesAsync(cancellationToken);
+    }
 }

@@ -24,4 +24,8 @@ public interface IMovieService
     Task<PaginatedResponse<MovieReviewDto>> GetMovieReviews(Guid movieId, int page, int pageSize, CancellationToken cancellationToken);
 
     Task<List<GenreDto>> GetGenres(CancellationToken cancellationToken);
+    
+    Task UpdateMovieReviewOfUser(UpdateReviewDto updateReviewDto, Guid userId, CancellationToken cancellationToken);
+    
+    Task DeleteMovieReviewOfUser(Guid userId, Guid reviewId, CancellationToken cancellationToken);
 }

@@ -28,6 +28,15 @@ internal sealed class GlobalExceptionHandler(ILogger<GlobalExceptionHandler> log
                     "https://datatracker.ietf.org/doc/html/rfc7231#section-6.5.4");
                 break;
             
+            case UnauthorizedAccessException:
+                status = StatusCodes.Status401Unauthorized;
+                problemDetails = CreateProblemDetails(
+                    status,
+                    "Unauthorized",
+                    "You are not authorized to access this resource.",
+                    "https://datatracker.ietf.org/doc/html/rfc7235#section-3.1");
+                break;
+            
             case IncorrectPasswordException:
                 status = StatusCodes.Status401Unauthorized;
                 problemDetails = CreateProblemDetails(

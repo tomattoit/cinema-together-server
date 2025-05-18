@@ -144,6 +144,40 @@ public class UserController(IUserService userService, IMovieService movieService
         
         return Results.Ok(reviews);
     }
+    
+    [HttpPut("me/reviews/{reviewId:guid}")]
+    [ProducesResponseType(StatusCodes.Status204NoContent)]
+    [ProducesResponseType(StatusCodes.Status404NotFound)]
+    [Authorize]
+    public async Task<IResult> EditMyReview(Guid reviewId, [FromBody]UpdateReviewModel model, CancellationToken cancellationToken)
+    {
+        if (!Guid.TryParse(User.FindFirst(ClaimTypes.NameIdentifier)?.Value, out var userId))
+        {
+            return Results.Unauthorized();
+        }
+
+        var updateReviewDto = new UpdateReviewDto(reviewId, model.Comment, model.Rate);
+        
+        await movieService.UpdateMovieReviewOfUser(updateReviewDto, userId, cancellationToken);
+        
+        return Results.NoContent();
+    }
+    
+    [HttpDelete("me/reviews/{reviewId:guid}")]
+    [ProducesResponseType(StatusCodes.Status204NoContent)]
+    [ProducesResponseType(StatusCodes.Status404NotFound)]
+    [Authorize]
+    public async Task<IResult> DeleteMyReview(Guid reviewId, CancellationToken cancellationToken)
+    {
+        if (!Guid.TryParse(User.FindFirst(ClaimTypes.NameIdentifier)?.Value, out var userId))
+        {
+            return Results.Unauthorized();
+        }
+        
+        await movieService.DeleteMovieReviewOfUser(userId, reviewId, cancellationToken);
+        
+        return Results.NoContent();
+    }
 
     [HttpPut("me/favourite/genres")]
     [ProducesResponseType(StatusCodes.Status204NoContent)]
