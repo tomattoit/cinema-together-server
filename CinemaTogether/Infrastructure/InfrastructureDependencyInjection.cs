@@ -75,7 +75,7 @@ public static class InfrastructureDependencyInjection
     private static IServiceCollection AddServices(this IServiceCollection services)
     {
         services
-            .AddScoped<ILoginService, LoginService>()
+            .AddScoped<IAuthService, AuthService>()
             .AddScoped<IUserService, UserService>()
             .AddScoped<ICountryService, CountryService>()
             .AddScoped<IFriendService, FriendService>()

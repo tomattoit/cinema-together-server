@@ -1,5 +1,7 @@
-﻿using Domain.Constants;
+﻿using System.Security.Claims;
+using Domain.Constants;
 using Application.Common.Services;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using WebApi.Models;
 
@@ -9,7 +11,7 @@ namespace WebApi.Controllers;
 [Route("api/authentication")]
 public class AuthenticationController(
     IConfiguration configuration,
-    ILoginService loginService)
+    IAuthService authService)
     : ControllerBase
 {
     [ProducesResponseType(StatusCodes.Status401Unauthorized)]
@@ -18,7 +20,7 @@ public class AuthenticationController(
     [HttpPost("login")]
     public async Task<IResult> Login([FromBody] LoginModel model, CancellationToken cancellationToken)
     {
-        var token = await loginService.Login(model.Email, model.Password, cancellationToken);
+        var token = await authService.Login(model.Email, model.Password, cancellationToken);
 
         Response.Cookies.Append(
             CommonConstants.DefaultTokenName,
@@ -49,5 +51,17 @@ public class AuthenticationController(
             });
 
         return Results.Ok();
+    }
+
+    [HttpPut("password")]
+    [Authorize]
+    public async Task<IResult> ChangePassword(UpdatePasswordModel model, CancellationToken cancellationToken)
+    {
+        if (!Guid.TryParse(User.FindFirstValue(ClaimTypes.NameIdentifier), out var userId))
+            return Results.Unauthorized();
+
+        await authService.UpdatePassword(userId, model.OldPassword, model.NewPassword, cancellationToken);
+        
+        return Results.NoContent();
     }
 }

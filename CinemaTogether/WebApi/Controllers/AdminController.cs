@@ -9,7 +9,7 @@ namespace WebApi.Controllers;
 
 [Authorize(Roles = "Admin")]
 [ApiController]
-[Route("api")]
+[Route("api/admin")]
 public class AdminController(IAdminService adminService) : ControllerBase
 {
     [HttpPut("movies/{id:guid}")]

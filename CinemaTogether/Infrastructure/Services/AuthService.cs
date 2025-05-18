@@ -8,9 +8,9 @@ using Shared.Cryptography;
 
 namespace Infrastructure.Services;
 
-public class LoginService(
+public class AuthService(
     ITokenProvider tokenProvider,
-    IApplicationDbContext context) : ILoginService
+    IApplicationDbContext context) : IAuthService
 {
     public async Task<string> Login(string email, string password, CancellationToken cancellationToken)
     {
@@ -36,5 +36,23 @@ public class LoginService(
         }
 
         return tokenProvider.Create(user);
+    }
+
+    public async Task UpdatePassword(Guid userId, string oldPassword, string newPassword, CancellationToken cancellationToken)
+    {
+        var user = await context.Users.FindAsync(userId, cancellationToken);
+        
+        if (user == null) throw new NotFoundException("User", "Id", userId.ToString());
+        
+        var isVerified = Hasher.Verify(oldPassword, user.PasswordHash);
+        
+        if (!isVerified)
+        {
+            throw new Exception();
+        }
+        
+        user.PasswordHash = Hasher.Hash(newPassword);
+        
+        await context.SaveChangesAsync(cancellationToken);
     }
 }
