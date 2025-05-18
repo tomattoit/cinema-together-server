@@ -9,4 +9,4 @@ public record UpdateUserModel(
     DateTime? DateOfBirth,
     Gender? Gender,
     string ProfilePicturePath,
-    Guid CityId);
+    Guid? CityId);
