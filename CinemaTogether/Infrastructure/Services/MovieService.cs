@@ -130,7 +130,9 @@ public class MovieService(IApplicationDbContext context) : IMovieService
         var rateEntity = new Domain.Entities.MovieReview
         {
             MovieId = movieId,
-            UserId = userId
+            UserId = userId,
+            Rate = rate,
+            Comment = comment
         };
 
         await context.MovieReviews.AddAsync(rateEntity, cancellationToken);
