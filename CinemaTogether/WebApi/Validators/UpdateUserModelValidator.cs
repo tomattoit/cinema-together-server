@@ -8,7 +8,7 @@ public class UpdateUserModelValidator : AbstractValidator<UpdateUserModel>
     public UpdateUserModelValidator()
     {
         RuleFor(c => c.DateOfBirth)
-            .Must(dob => dob <= DateTime.Now).WithMessage("Date of birth must be in the past");
+            .Must(dob => dob <= DateTime.Now || dob == null).WithMessage("Date of birth must be in the past");
         
         RuleFor(c => c.Email).NotEmpty().WithMessage("Email is required");
         

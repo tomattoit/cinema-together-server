@@ -156,10 +156,10 @@ public class UserService(
         if (user == null)
             throw new NotFoundException("User", "Id", userId.ToString());
         
-        if (user.Email == userDto.Email)
+        if (await context.Users.AnyAsync(u => u.Id != userId && userDto.Email == u.Email, cancellationToken))
             throw new PropertyNotUniqueException("Email");
         
-        if (user.Username == userDto.Username)
+        if (await context.Users.AnyAsync(u => u.Id != userId && userDto.Username == u.Username, cancellationToken))
             throw new PropertyNotUniqueException("Username");
             
         user.Email = userDto.Email;
