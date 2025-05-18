@@ -6,7 +6,7 @@ using Microsoft.AspNetCore.Mvc;
 namespace WebApi.Controllers;
 
 [ApiController]
-[Route("api/[controller]")]
+[Route("api/groups")]
 [Authorize]
 public class GroupsController(IGroupService groupService) : ControllerBase
 {
@@ -102,6 +102,14 @@ public class GroupsController(IGroupService groupService) : ControllerBase
 
         await groupService.DeleteGroupAsync(id, cancellationToken);
         return Results.Ok();
+    }
+
+    [HttpGet]
+    public async Task<IResult> SearchGroups(string searchString, int page, int pageSize, CancellationToken cancellationToken)
+    {
+        var groups = await groupService.GetGroupsAsync(page, pageSize, searchString, cancellationToken);
+        
+        return Results.Ok(groups);
     }
 }
 

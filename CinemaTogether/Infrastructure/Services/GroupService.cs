@@ -1,3 +1,4 @@
+using Application.Common.Dto;
 using Application.Common.Services;
 using Application.Data;
 using Domain.Entities;
@@ -156,5 +157,32 @@ public class GroupService : IGroupService
             _context.Groups.Remove(group);
             await _context.SaveChangesAsync(cancellationToken);
         }
+    }
+    
+    public async Task<PaginatedResponse<GroupDto>> GetGroupsAsync(
+        int page,
+        int pageSize,
+        string searchString,
+        CancellationToken cancellationToken)
+    {
+        var query = _context.Groups.AsQueryable();
+
+        if (!string.IsNullOrWhiteSpace(searchString))
+        {
+            query = query.Where(u => u.Name.Contains(searchString));
+        }
+        
+        var totalCount = await query.CountAsync(cancellationToken);
+        
+        var groups = await query
+            .OrderBy(g => g.Name)
+            .Skip((page - 1) * pageSize)
+            .Take(pageSize)
+            .Select(g => new GroupDto(g.Id, g.Name, g.Description))
+            .ToListAsync(cancellationToken);
+
+        var paginatedResponse = new PaginatedResponse<GroupDto>(groups, totalCount, page, pageSize);
+        
+        return paginatedResponse;
     }
 }
