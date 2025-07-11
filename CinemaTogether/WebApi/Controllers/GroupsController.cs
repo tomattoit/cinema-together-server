@@ -2,6 +2,7 @@ using System.Security.Claims;
 using Application.Common.Services;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Application.Common.Dto;
 
 namespace WebApi.Controllers;
 
@@ -35,7 +36,19 @@ public class GroupsController(IGroupService groupService) : ControllerBase
             return Results.NotFound();
         }
 
-        return Results.Ok(group);
+        var dto = new GroupDetailsDto(
+            group.Id,
+            group.Name,
+            group.Description,
+            group.Type,
+            group.PreferredGenres?.Select(g => g.Name).ToList() ?? new List<string>(),
+            group.OwnerId,
+            group.Owner?.Username ?? string.Empty,
+            group.Members?.Select(m => new MemberDto(m.Id, m.Username, m.ProfilePicturePath)).ToList() ?? new List<MemberDto>(),
+            group.ChatId
+        );
+
+        return Results.Ok(dto);
     }
 
     [HttpGet("my")]
@@ -67,6 +80,13 @@ public class GroupsController(IGroupService groupService) : ControllerBase
     {
         var inviterId = Guid.Parse(User.FindFirst(ClaimTypes.NameIdentifier)?.Value!);
         await groupService.InviteToGroupAsync(id, inviterId, request.InviteeId, cancellationToken);
+        return Results.Ok();
+    }
+
+    [HttpPost("{id}/kick")]
+    public async Task<IResult> KickFromGroup(Guid id, [FromBody] InviteToGroupRequest request, CancellationToken cancellationToken)
+    {
+        await groupService.LeaveGroupAsync(id, request.InviteeId, cancellationToken);
         return Results.Ok();
     }
 

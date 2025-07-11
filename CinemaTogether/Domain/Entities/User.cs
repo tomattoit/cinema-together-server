@@ -44,4 +44,6 @@ public class User : IBaseEntity
     public List<MovieReview> MovieUserRates { get; set; }
     
     public ICollection<UserGenre> UserGenres { get; set; } = new List<UserGenre>();
+
+    public bool IsDeleted { get; set; }
 }

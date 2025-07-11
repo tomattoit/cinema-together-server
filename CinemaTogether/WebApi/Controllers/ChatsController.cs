@@ -87,7 +87,15 @@ public class ChatsController(IChatService chatService) : ControllerBase
         await chatService.UnpinMessageAsync(messageId, cancellationToken);
         return Results.Ok();
     }
+
+    [HttpPost]
+    public async Task<IResult> CreateChat([FromBody] CreateChatRequest request, CancellationToken cancellationToken)
+    {
+        var chat = await chatService.CreateChatAsync(request.Type, cancellationToken);
+        return Results.Ok(chat);
+    }
 }
 
 public record SendMessageRequest(string Text, string? ImagePath);
 public record EditMessageRequest(string NewText);
+public record CreateChatRequest(string Type);

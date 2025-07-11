@@ -11,8 +11,8 @@ public class CountryService(IApplicationDbContext context) : ICountryService
     {
         var countries = await context.Countries
             .AsNoTracking()
-            .Select(c => new CountryDto(c.Id, c.Name))
             .OrderBy(c => c.Name)
+            .Select(c => new CountryDto(c.Id, c.Name))
             .ToListAsync();
         
         return countries;

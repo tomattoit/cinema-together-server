@@ -47,11 +47,10 @@ public class DatabaseSeeder(ApplicationDbContext context, IConfiguration config)
     {
         var token = config["MoviesApi:Key"];
         var ids = new List<int>();
-        for (int page = 1; page <= 10; page++)
+        for (int page = 1; page <= 30; page++)
         {
-            var options =
-                new RestClientOptions(
-                    $"https://api.themoviedb.org/3/movie/top_rated?language=en-US&page={page}");
+            var options = new RestClientOptions(
+                $"https://api.themoviedb.org/3/discover/movie?language=ru-Ru&sort_by=vote_average.desc&vote_count.gte=5000&page={page}");
             var client = new RestClient(options);
             var request = new RestRequest("");
             request.AddHeader("accept", "application/json");
@@ -69,7 +68,7 @@ public class DatabaseSeeder(ApplicationDbContext context, IConfiguration config)
 
         foreach (var id in ids)
         {
-            var options = new RestClientOptions($"https://api.themoviedb.org/3/movie/{id}?language=en-US");
+            var options = new RestClientOptions($"https://api.themoviedb.org/3/movie/{id}?language=ru-RU");
             var client = new RestClient(options);
             var request = new RestRequest("");
             request.AddHeader("accept", "application/json");
@@ -112,7 +111,7 @@ public class DatabaseSeeder(ApplicationDbContext context, IConfiguration config)
                 }
             }
 
-            options = new RestClientOptions($"https://api.themoviedb.org/3/movie/{id}/credits?language=en-US");
+            options = new RestClientOptions($"https://api.themoviedb.org/3/movie/{id}/credits?language=ru-RU");
             client = new RestClient(options);
             request = new RestRequest("");
             request.AddHeader("accept", "application/json");

@@ -96,7 +96,7 @@ public class UserController(IUserService userService, IMovieService movieService
     public IResult GetGenders()
     {
         var genders = userService.GetGenders();
-        
+
         return Results.Ok(genders);
     }
 

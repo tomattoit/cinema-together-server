@@ -154,6 +154,7 @@ public class MovieService(IApplicationDbContext context) : IMovieService
             .Take(pageSize)
             .Select(
                 m => new MovieReviewDto(
+                    m.Id,
                     new MovieListItem(
                         m.MovieId,
                         m.Movie.Title,
@@ -183,6 +184,7 @@ public class MovieService(IApplicationDbContext context) : IMovieService
             .Take(pageSize)
             .Select(
                 m => new MovieReviewDto(
+                    m.Id,
                     new MovieListItem(
                         m.MovieId,
                         m.Movie.Title,
@@ -229,6 +231,16 @@ public class MovieService(IApplicationDbContext context) : IMovieService
         review.Rate = updateReviewDto.Rate;
         
         await context.SaveChangesAsync(cancellationToken);
+
+        // Recalculate movie rating and count
+        var movie = await context.Movies.Include(m => m.MovieReviews).FirstOrDefaultAsync(m => m.Id == review.MovieId, cancellationToken);
+        if (movie != null)
+        {
+            var reviews = movie.MovieReviews;
+            movie.RatingCount = reviews.Count;
+            movie.Rating = reviews.Count > 0 ? reviews.Average(r => r.Rate) : 0;
+            await context.SaveChangesAsync(cancellationToken);
+        }
     }
 
     public async Task DeleteMovieReviewOfUser(Guid userId, Guid reviewId, CancellationToken cancellationToken)
@@ -239,7 +251,18 @@ public class MovieService(IApplicationDbContext context) : IMovieService
         
         if (review.UserId != userId) throw new UnauthorizedAccessException(); 
         
+        var movieId = review.MovieId;
         context.MovieReviews.Remove(review);
         await context.SaveChangesAsync(cancellationToken);
+
+        // Recalculate movie rating and count
+        var movie = await context.Movies.Include(m => m.MovieReviews).FirstOrDefaultAsync(m => m.Id == movieId, cancellationToken);
+        if (movie != null)
+        {
+            var reviews = movie.MovieReviews;
+            movie.RatingCount = reviews.Count;
+            movie.Rating = reviews.Count > 0 ? reviews.Average(r => r.Rate) : 0;
+            await context.SaveChangesAsync(cancellationToken);
+        }
     }
 }

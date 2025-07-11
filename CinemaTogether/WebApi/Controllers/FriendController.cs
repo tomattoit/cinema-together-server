@@ -21,9 +21,9 @@ public class FriendController(IFriendService friendService) : ControllerBase
         if (!Guid.TryParse(User.FindFirstValue(ClaimTypes.NameIdentifier), out var userId))
             return Results.Unauthorized();
         
-        await friendService.AddFriend(userId, friendId);
+        var chatId = await friendService.AddFriend(userId, friendId);
 
-        return Results.Ok();
+        return Results.Ok(chatId);
     }
 
     [ProducesResponseType(StatusCodes.Status401Unauthorized)]

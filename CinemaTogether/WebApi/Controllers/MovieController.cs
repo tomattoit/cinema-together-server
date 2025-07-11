@@ -69,7 +69,7 @@ public class MovieController(IMovieService movieService) : ControllerBase
         return Results.Created();
     }
 
-    [HttpGet("{id:guid}/reviews")]
+    [HttpGet("{movieId:guid}/reviews")]
     [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(PaginatedResponse<MovieReviewDto>))]
     [ProducesResponseType(StatusCodes.Status404NotFound)]
     public async Task<IResult> GetMovieReviews(Guid movieId, CancellationToken cancellationToken, [FromQuery]int page = 1, [FromQuery]int pageSize = 10)

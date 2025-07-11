@@ -4,7 +4,7 @@ namespace Application.Common.Services;
 
 public interface IFriendService
 {
-    Task AddFriend(Guid userId, Guid friendId);
+    Task<string> AddFriend(Guid userId, Guid friendId);
 
     Task RemoveFriend(Guid userId, Guid friendId);
 

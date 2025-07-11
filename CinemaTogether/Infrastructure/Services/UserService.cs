@@ -177,7 +177,8 @@ public class UserService(
     {
         var genderList = Enum.GetValues(typeof(Gender))
             .Cast<Gender>()
-            .Select(g => new GenderDto(g, g.ToString()))
+            .Select(g => new GenderDto(g, 
+                g.ToString() == "Male" ? "Мужской" : (g.ToString() == "Female" ? "Женский" : "Не указано")))
             .ToList();
         
         return genderList;
@@ -202,7 +203,7 @@ public class UserService(
             .OrderBy(u => u.Name)
             .Skip((page - 1) * pageSize)
             .Take(pageSize)
-            .Select(u => new UserListItemDto(u.Id, u.Username, u.Name, u.Rating))
+            .Select(u => new UserListItemDto(u.Id, u.Username, u.Name, u.Rating, u.ProfilePicturePath))
             .ToListAsync(cancellationToken);
 
         var paginatedResponse = new PaginatedResponse<UserListItemDto>(users, totalCount, page, pageSize);

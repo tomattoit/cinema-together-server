@@ -13,8 +13,7 @@ public class UserConfiguration : IEntityTypeConfiguration<User>
             .IsRequired()
             .HasMaxLength(EntityLimitations.MaxEmailLength);
         
-        builder.HasIndex(x => x.Email)
-            .IsUnique();
+       
         
         builder.Property(x => x.PasswordHash)
             .IsRequired()
@@ -24,8 +23,6 @@ public class UserConfiguration : IEntityTypeConfiguration<User>
             .IsRequired()
             .HasMaxLength(EntityLimitations.MaxUsernameLength);
         
-        builder.HasIndex(x => x.Username)
-            .IsUnique();
         
         builder.Property(x => x.Name)
             .HasMaxLength(EntityLimitations.MaxNameLength);
@@ -35,5 +32,7 @@ public class UserConfiguration : IEntityTypeConfiguration<User>
         
         builder.Property(x => x.Rating)
             .HasPrecision(EntityLimitations.RatingPrecision, EntityLimitations.RatingScale);
+
+        builder.HasQueryFilter(x => !x.IsDeleted);
     }
 }

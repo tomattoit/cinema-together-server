@@ -7,9 +7,9 @@ using Microsoft.EntityFrameworkCore;
 
 namespace Infrastructure.Services;
 
-public class FriendService(IApplicationDbContext context) : IFriendService
+public class FriendService(IApplicationDbContext context, IChatService chatService) : IFriendService
 {
-    public async Task AddFriend(Guid userId, Guid friendId)
+    public async Task<string> AddFriend(Guid userId, Guid friendId)
     {
         if (userId == friendId)
             throw new FriendAddingException("You cannot add a yourself to friends.");
@@ -23,8 +23,16 @@ public class FriendService(IApplicationDbContext context) : IFriendService
             FriendId = friendId
         };
 
+        string chatId = null;
+        if (await context.UserFriends.AnyAsync(uf => uf.UserId == friendId && uf.FriendId == userId))
+        {
+            var chat = await chatService.CreateChatAsync("private");
+            chatId = chat.Id;
+        }
+
         context.UserFriends.Add(friendship);
         await context.SaveChangesAsync();
+        return chatId;
     }
 
     public async Task RemoveFriend(Guid userId, Guid friendId)
@@ -47,7 +55,8 @@ public class FriendService(IApplicationDbContext context) : IFriendService
                 uf.Friend.Id,
                 uf.Friend.Username,
                 uf.Friend.Name,
-                uf.Friend.Rating))
+                uf.Friend.Rating,
+                uf.Friend.ProfilePicturePath))
             .ToListAsync();
         
         var totalCount = requests.Count();
@@ -63,7 +72,8 @@ public class FriendService(IApplicationDbContext context) : IFriendService
                 uf.User.Id,
                 uf.User.Username,
                 uf.User.Name,
-                uf.User.Rating))
+                uf.User.Rating,
+                uf.User.ProfilePicturePath))
             .ToListAsync();
         
         var totalCount = requests.Count();
@@ -86,7 +96,8 @@ public class FriendService(IApplicationDbContext context) : IFriendService
                 u.Id,
                 u.Username,
                 u.Name,
-                u.Rating))
+                u.Rating, 
+                u.ProfilePicturePath))
             .ToListAsync();
         
         var totalCount = friends.Count();

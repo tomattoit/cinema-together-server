@@ -4,6 +4,7 @@ using Infrastructure;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -11,9 +12,11 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace Infrastructure.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    partial class ApplicationDbContextModelSnapshot : ModelSnapshot
+    [Migration("20250617224734_b")]
+    partial class b
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -269,8 +272,8 @@ namespace Infrastructure.Migrations
                         .HasColumnType("nvarchar(450)");
 
                     b.Property<string>("Description")
-                        .HasMaxLength(10000)
-                        .HasColumnType("nvarchar(max)");
+                        .HasMaxLength(500)
+                        .HasColumnType("nvarchar(500)");
 
                     b.Property<string>("ImagePath")
                         .HasColumnType("nvarchar(max)");
@@ -571,13 +574,13 @@ namespace Infrastructure.Migrations
                         new
                         {
                             Id = new Guid("a0440a78-41cc-419c-b05f-b511ee65d28a"),
-                            DateOfBirth = new DateTime(2000, 6, 18, 8, 25, 24, 747, DateTimeKind.Local).AddTicks(5229),
+                            DateOfBirth = new DateTime(2000, 6, 18, 1, 47, 32, 996, DateTimeKind.Local).AddTicks(5900),
                             Email = "d.krumkachev@gmail.com",
                             Gender = 1,
                             IsDeleted = false,
                             IsEmailVerified = true,
                             Name = "Robby Krieger",
-                            PasswordHash = "9FBD04FF93C1717849C179D1F169A2108F7D20AD2DA9C9B9E61A69AFEA84AAF61964E5429E95F90E310A718964340A6A",
+                            PasswordHash = "BA3CB4B46047250C3F442B500D2C91050F73A84BCFA4343D2CDAD410A14E8EC34884AB8FC50A16B60F5531C187C19552",
                             Rating = 0m,
                             RatingCount = 0,
                             Role = 1,
@@ -587,13 +590,13 @@ namespace Infrastructure.Migrations
                         new
                         {
                             Id = new Guid("ddc7d332-e194-4e6e-a77d-c1ebce29e746"),
-                            DateOfBirth = new DateTime(2002, 6, 18, 8, 25, 24, 753, DateTimeKind.Local).AddTicks(5764),
+                            DateOfBirth = new DateTime(2002, 6, 18, 1, 47, 33, 3, DateTimeKind.Local).AddTicks(6946),
                             Email = "artemij1258@gmail.com",
                             Gender = 1,
                             IsDeleted = false,
                             IsEmailVerified = true,
                             Name = "John Densmore",
-                            PasswordHash = "9220370DBEDCCED2D08F4CD1B4CB9E2187704384F05C6B0D3F4F96582E1FF6810954744CD027ECC24701012D848D80F4",
+                            PasswordHash = "0F74D762C49969BDF03B3216110F352AF47C3DB5EAAB05ED9BDC5BEC4296DAC2160A6A389687351AF4D493DF1ED96C70",
                             Rating = 0m,
                             RatingCount = 0,
                             Role = 0,

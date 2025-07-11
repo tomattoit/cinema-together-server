@@ -55,7 +55,8 @@ public class AdminService(ApplicationDbContext context) : IAdminService
         var user = await context.Users.FindAsync(userId, cancellationToken);
         if (user == null) throw new NotFoundException("User", "Id", userId.ToString());
 
-        context.Users.Remove(user);
+        user.IsDeleted = true;
+        context.Users.Update(user);
         await context.SaveChangesAsync(cancellationToken);
     }
 
